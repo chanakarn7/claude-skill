@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>claude-skills · doc-driven delivery pipeline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#0b0e14; --bg-soft:#0f131c; --surface:#151a25; --surface-2:#1a2130;
+    --border:#222b3c; --border-soft:#1a2231;
+    --text:#e7ebf3; --dim:#97a1b2; --faint:#5e6a7d;
+    --violet:#8b9bff; --violet-soft:rgba(139,155,255,.12); --violet-bd:rgba(139,155,255,.45);
+    --teal:#54d6c4; --teal-soft:rgba(84,214,196,.12);
+    --r-sm:8px; --r-md:12px; --r-lg:16px;
+    --maxw:980px;
+  }
+  [data-theme="light"]{
+    --bg:#fbfcfe; --bg-soft:#f4f6fa; --surface:#ffffff; --surface-2:#f7f9fc;
+    --border:#e4e8ef; --border-soft:#eef1f6;
+    --text:#16202e; --dim:#5a6675; --faint:#8b97a6;
+    --violet:#5566e6; --violet-soft:rgba(85,102,230,.09); --violet-bd:rgba(85,102,230,.38);
+    --teal:#11998a; --teal-soft:rgba(17,153,138,.1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg); color:var(--text);
+    font-family:'Inter','Noto Sans Thai',system-ui,-apple-system,sans-serif;
+    line-height:1.65; -webkit-font-smoothing:antialiased;
+    transition:background .3s ease,color .3s ease;
+  }
+  [lang="th"] body,[lang="th"]{--lh:1.8}
+  [lang="th"] .hero p,[lang="th"] .sec-head p,[lang="th"] .scard .desc,[lang="th"] .ocard p{line-height:1.8}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  code,.mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+  a{color:inherit;text-decoration:none}
+
+  header{
+    position:sticky;top:0;z-index:50;
+    background:color-mix(in srgb,var(--bg) 82%,transparent);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border-soft);
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;height:62px;gap:16px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:15px}
+  .brand .dot{width:26px;height:26px;border-radius:8px;background:var(--violet-soft);
+    border:1px solid var(--violet-bd);display:grid;place-items:center;color:var(--violet)}
+  .nav-links{display:flex;align-items:center;gap:28px;margin-left:auto}
+  .nav-links a{font-size:14px;color:var(--dim);transition:color .2s}
+  .nav-links a:hover{color:var(--text)}
+  .ctrl{display:flex;align-items:center;gap:8px}
+  .toggle{height:36px;border-radius:9px;border:1px solid var(--border);
+    background:var(--surface);color:var(--dim);display:flex;align-items:center;justify-content:center;
+    gap:6px;cursor:pointer;transition:.2s;padding:0 10px;font-size:13px;font-weight:500;font-family:inherit}
+  .toggle.icon{width:36px;padding:0}
+  .toggle:hover{color:var(--text);border-color:var(--violet-bd)}
+  @media(max-width:680px){.nav-links{display:none}}
+
+  .hero{padding:84px 0 56px;text-align:center;position:relative;overflow:hidden}
+  .kicker{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;
+    letter-spacing:.04em;text-transform:uppercase;color:var(--violet);
+    background:var(--violet-soft);border:1px solid var(--violet-bd);
+    padding:6px 13px;border-radius:999px;margin-bottom:24px}
+  .hero h1{font-size:46px;font-weight:600;line-height:1.12;letter-spacing:-.02em;max-width:20ch;margin:0 auto 18px}
+  .hero p{font-size:18px;color:var(--dim);max-width:62ch;margin:0 auto}
+  @media(max-width:640px){.hero h1{font-size:32px}.hero{padding:56px 0 40px}}
+
+  .chain{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;margin-top:40px}
+  .node{display:flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--border);
+    border-radius:var(--r-sm);padding:8px 12px;font-size:13.5px;font-family:'JetBrains Mono',monospace;transition:.2s}
+  .node:hover{border-color:var(--violet-bd);transform:translateY(-1px)}
+  .node .ic{color:var(--violet);display:flex}
+  .node.dim{border-style:dashed;color:var(--dim);font-family:'Inter','Noto Sans Thai',sans-serif}
+  .node .n{color:var(--faint);font-size:11px}
+  .sep{color:var(--faint);display:flex}
+
+  section{padding:64px 0;border-top:1px solid var(--border-soft)}
+  .sec-head{margin-bottom:36px}
+  .sec-head .eyebrow{font-size:13px;font-weight:500;color:var(--violet);letter-spacing:.04em;margin-bottom:10px}
+  .sec-head h2{font-size:28px;font-weight:600;letter-spacing:-.01em;margin-bottom:10px}
+  .sec-head p{color:var(--dim);font-size:16px;max-width:66ch}
+
+  .orch{display:grid;gap:18px}
+  .ocard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:26px 28px;position:relative;transition:.2s}
+  .ocard.feat{border-color:var(--violet-bd);background:linear-gradient(180deg,var(--violet-soft),transparent 60%)}
+  .ocard-top{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+  .ocard-ic{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;flex:none;
+    background:var(--violet-soft);border:1px solid var(--violet-bd);color:var(--violet)}
+  .ocard h3{font-size:19px;font-weight:600;font-family:'JetBrains Mono',monospace;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .pill{font-size:12px;font-weight:500;font-family:'Inter','Noto Sans Thai',sans-serif;color:var(--dim);
+    background:var(--surface-2);border:1px solid var(--border);padding:3px 10px;border-radius:999px}
+  .ocard p{color:var(--dim);font-size:15px;margin-bottom:16px}
+  .ocard p .mono{color:var(--text);font-size:13.5px}
+  .files{display:flex;flex-wrap:wrap;gap:7px}
+  .ftag{font-family:'JetBrains Mono',monospace;font-size:12px;padding:4px 10px;border-radius:7px;
+    background:var(--teal-soft);color:var(--teal);border:1px solid color-mix(in srgb,var(--teal) 30%,transparent)}
+  .routes{display:flex;align-items:center;justify-content:center;gap:10px;color:var(--faint);font-size:13px;margin:2px 0}
+
+  .flow{display:grid;grid-template-columns:repeat(auto-fill,minmax(116px,1fr));gap:12px}
+  .step{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:16px 14px;transition:.2s;position:relative}
+  .step:hover{border-color:var(--violet-bd);transform:translateY(-2px)}
+  .step .si{width:34px;height:34px;border-radius:9px;background:var(--violet-soft);color:var(--violet);
+    display:grid;place-items:center;margin-bottom:12px}
+  .step .num{position:absolute;top:14px;right:14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--faint)}
+  .step .name{font-family:'JetBrains Mono',monospace;font-weight:500;font-size:14px;margin-bottom:4px}
+  .step .role{font-size:12.5px;color:var(--dim);line-height:1.5}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+  .scard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:20px;transition:.2s}
+  .scard:hover{border-color:var(--violet-bd);transform:translateY(-2px)}
+  .scard-top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .scard-ic{width:32px;height:32px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border);
+    color:var(--violet);display:grid;place-items:center}
+  .scard h4{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:500}
+  .scard .desc{font-size:13.5px;color:var(--dim);margin-bottom:14px;min-height:42px}
+  .io{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:12px}
+  .io .r{font-family:'JetBrains Mono',monospace;color:var(--dim);background:var(--surface-2);
+    border:1px solid var(--border);padding:3px 8px;border-radius:6px}
+  .io .w{font-family:'JetBrains Mono',monospace;color:var(--teal);background:var(--teal-soft);
+    border:1px solid color-mix(in srgb,var(--teal) 30%,transparent);padding:3px 8px;border-radius:6px}
+  .io .ar{color:var(--faint);display:flex}
+
+  .prog{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:28px}
+  .prog-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .pbox{flex:1;min-width:200px;background:var(--bg-soft);border:1px solid var(--border);border-radius:var(--r-md);padding:18px}
+  .pbox .lab{font-size:12px;color:var(--faint);margin-bottom:10px;letter-spacing:.03em;text-transform:uppercase}
+  .pbox h5{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:500;margin-bottom:12px;color:var(--violet)}
+  .pbox ul{list-style:none;display:flex;flex-direction:column;gap:7px}
+  .pbox li{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--dim);display:flex;align-items:center;gap:8px}
+  .pbox li::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--teal);flex:none}
+  .prog-ar{color:var(--faint);display:flex;flex:none}
+  .note{margin-top:20px;font-size:14px;color:var(--dim);display:flex;gap:10px;align-items:flex-start}
+  .note .ic{color:var(--violet);flex:none;margin-top:2px}
+
+  footer{border-top:1px solid var(--border-soft);padding:40px 0 56px;color:var(--faint);font-size:13.5px}
+  footer .mono{color:var(--dim)}
+  footer strong{color:var(--text);font-weight:500}
+
+  @media(prefers-reduced-motion:no-preference){
+    .reveal{opacity:0;transform:translateY(14px);animation:up .6s ease forwards}
+    @keyframes up{to{opacity:1;transform:none}}
+  }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="i-map" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Z"/><path d="M9 4v14M15 6v14"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.5 16 12l-6 3.5Z"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M5 3h9l5 5v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><path d="M8 13h8M8 17h5"/></symbol>
+  <symbol id="i-db" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.66 3.58 3 8 3s8-1.34 8-3V5"/><path d="M4 11v6c0 1.66 3.58 3 8 3s8-1.34 8-3v-6"/></symbol>
+  <symbol id="i-palette" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 1 1 0-18c4.97 0 9 3.58 9 8 0 2.5-2 3.5-3.5 3.5H15a2 2 0 0 0-1.5 3.3A1.5 1.5 0 0 1 12 21Z"/><circle cx="8.5" cy="10" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="15.5" cy="10" r="1"/></symbol>
+  <symbol id="i-pointer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4 11 20l2.2-6.8L20 11Z"/></symbol>
+  <symbol id="i-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 20 6.5v9L12 20l-8-4.5v-9Z"/><path d="m4 6.5 8 4.5 8-4.5M12 11v9"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h10"/><path d="m9 11 3 3 9-9"/></symbol>
+  <symbol id="i-server" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="7" rx="1.5"/><rect x="3" y="13" width="18" height="7" rx="1.5"/><path d="M7 7.5h.01M7 16.5h.01"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></symbol>
+  <symbol id="i-swatch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><circle cx="17.5" cy="17.5" r="3.5"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18Z"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></symbol>
+</defs></svg>
+
+<header>
+  <div class="wrap nav">
+    <div class="brand"><span class="dot"><svg width="15" height="15"><use href="#i-map"/></svg></span>claude-skills</div>
+    <nav class="nav-links">
+      <a href="#orchestrators" data-en="Orchestrators" data-th="ตัวควบคุม">Orchestrators</a>
+      <a href="#toolchain" data-en="Toolchain" data-th="ลำดับงาน">Toolchain</a>
+      <a href="#skills" data-en="Skills" data-th="สกิล">Skills</a>
+      <a href="#big" data-en="Big builds" data-th="งานใหญ่">Big builds</a>
+    </nav>
+    <div class="ctrl">
+      <button class="toggle" id="langBtn" aria-label="Switch language"><svg width="16" height="16"><use href="#i-globe"/></svg><span id="langLabel">EN</span></button>
+      <button class="toggle icon" id="themeBtn" aria-label="Toggle colour theme"><svg width="17" height="17" id="themeIcon"><use href="#i-sun"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <section class="hero" style="border-top:none">
+      <span class="kicker reveal"><svg width="13" height="13"><use href="#i-spark"/></svg><span data-en="doc-driven delivery pipeline" data-th="ไปป์ไลน์ส่งงานด้วยเอกสาร">doc-driven delivery pipeline</span></span>
+      <h1 class="reveal" style="animation-delay:.05s" data-en="From a raw idea to a deployed system, one document at a time." data-th="จากไอเดียดิบสู่ระบบที่ deploy ได้ ทีละเอกสาร">From a raw idea to a deployed system, one document at a time.</h1>
+      <p class="reveal" style="animation-delay:.1s" data-en="A reusable set of user-level skills. Each stage reads the previous stage's canonical file, so the whole pipeline is resumable across many sessions — and scales from a single page up to an 11-module ERP." data-th="ชุดสกิลระดับผู้ใช้ที่นำกลับมาใช้ซ้ำได้ แต่ละขั้นอ่านไฟล์มาตรฐานของขั้นก่อนหน้า ทั้งไปป์ไลน์จึงทำต่อข้ามเซสชันได้ — และสเกลได้ตั้งแต่หน้าเดียวจนถึง ERP 11 โมดูล">A reusable set of user-level skills. Each stage reads the previous stage's canonical file, so the whole pipeline is resumable across many sessions — and scales from a single page up to an 11-module ERP.</p>
+      <div class="chain reveal" style="animation-delay:.15s">
+        <span class="node"><span class="n">1</span><span class="ic"><svg width="15" height="15"><use href="#i-file"/></svg></span>ba</span>
+        <span class="sep"><svg width="15" height="15"><use href="#i-arrow"/></svg></span>
+        <span class="node"><span class="n">2</span><span class="ic"><svg width="15" height="15"><use href="#i-db"/></svg></span>sa</span>
+        <span class="sep"><svg width="15" height="15"><use href="#i-arrow"/></svg></span>
+        <span class="node dim"><svg width="14" height="14"><use href="#i-swatch"/></svg><span data-en="design" data-th="ดีไซน์">design</span></span>
+        <span class="sep"><svg width="15" height="15"><use href="#i-arrow"/></svg></span>
+        <span class="node"><span class="n">3</span><span class="ic"><svg width="15" height="15"><use href="#i-palette"/></svg></span>uxui</span>
+        <span class="sep"><svg width="15" height="15"><use href="#i-arrow"/></svg></span>
+        <span class="node"><span class="n">4</span><span class="ic"><svg width="15" height="15"><use href="#i-pointer"/></svg></span>proto</span>
+        <span class="sep"><svg width="15" height="15"><use href="#i-arrow"/></svg></span>
+        <span class="node"><span class="n">5</span><span class="ic"><svg width="15" height="15"><use href="#i-box"/></svg></span>scaffold</span>
+        <span class="sep"><svg width="15" height="15"><use href="#i-arrow"/></svg></span>
+        <span class="node"><span class="n">6</span><span class="ic"><svg width="15" height="15"><use href="#i-code"/></svg></span>dev</span>
+        <span class="sep"><svg width="15" height="15"><use href="#i-arrow"/></svg></span>
+        <span class="node"><span class="n">7</span><span class="ic"><svg width="15" height="15"><use href="#i-check"/></svg></span>qa</span>
+        <span class="sep"><svg width="15" height="15"><use href="#i-arrow"/></svg></span>
+        <span class="node"><span class="n">8</span><span class="ic"><svg width="15" height="15"><use href="#i-server"/></svg></span>devops</span>
+      </div>
+    </section>
+
+    <section id="orchestrators">
+      <div class="sec-head">
+        <p class="eyebrow" data-en="Two orchestrators" data-th="ตัวควบคุมสองตัว">Two orchestrators</p>
+        <h2 data-en="Pick an entry point — they route to each other" data-th="เลือกจุดเริ่มไหนก็ได้ — มัน route หากันเอง">Pick an entry point — they route to each other</h2>
+        <p data-en="You never have to choose up front. Each orchestrator checks the scope on entry and hands off to the other if it picked the wrong altitude." data-th="ไม่ต้องเลือกตั้งแต่แรก แต่ละตัวเช็ก scope ตอนเริ่ม แล้วส่งต่อให้อีกตัวถ้าเลือกผิดระดับ">You never have to choose up front. Each orchestrator checks the scope on entry and hands off to the other if it picked the wrong altitude.</p>
+      </div>
+      <div class="orch">
+        <div class="ocard feat">
+          <div class="ocard-top">
+            <span class="ocard-ic"><svg width="24" height="24"><use href="#i-map"/></svg></span>
+            <h3>roadmap <span class="pill" data-en="whole system · multi-module · multi-sprint" data-th="ทั้งระบบ · หลายโมดูล · หลายสปรินต์">whole system · multi-module · multi-sprint</span></h3>
+          </div>
+          <p data-en="For builds too big for one PRD — ERP, hospital systems, marketplaces, super-apps. It decomposes the system into modules, sizes a rough sprint plan, locks the shared architecture / data model / design system, then drives &lt;span class=&quot;mono&quot;&gt;/kickoff&lt;/span&gt; per module just-in-time and tracks progress so the whole thing is resumable." data-th="สำหรับงานที่ใหญ่เกินกว่าจะใช้ PRD เดียว — ERP, ระบบโรงพยาบาล, marketplace, super-app มันแตกระบบเป็นโมดูล วางแผนสปรินต์คร่าวๆ ล็อก architecture / data model / design system ที่ใช้ร่วมกัน แล้วสั่ง &lt;span class=&quot;mono&quot;&gt;/kickoff&lt;/span&gt; ทีละโมดูลแบบ just-in-time พร้อมติดตามความคืบหน้าให้ทำต่อได้เสมอ">For builds too big for one PRD — ERP, hospital systems, marketplaces, super-apps. It decomposes the system into modules, sizes a rough sprint plan, locks the shared architecture / data model / design system, then drives <span class="mono">/kickoff</span> per module just-in-time and tracks progress so the whole thing is resumable.</p>
+          <div class="files">
+            <span class="ftag">program/VISION</span><span class="ftag">ARCHITECTURE</span><span class="ftag">DATA_MODEL</span><span class="ftag">DESIGN_SYSTEM</span><span class="ftag">ROADMAP</span>
+          </div>
+        </div>
+        <div class="routes"><svg width="16" height="16"><use href="#i-down"/></svg> <span data-en="drives per module · hands off if it turns out small" data-th="ขับทีละโมดูล · ส่งต่อถ้ากลายเป็นงานเล็ก">drives per module · hands off if it turns out small</span></div>
+        <div class="ocard">
+          <div class="ocard-top">
+            <span class="ocard-ic"><svg width="24" height="24"><use href="#i-play"/></svg></span>
+            <h3>kickoff <span class="pill" data-en="one coherent project · idea → code" data-th="หนึ่งโปรเจกต์ · ไอเดีย → โค้ด">one coherent project · idea → code</span></h3>
+          </div>
+          <p data-en="Runs the eight-stage toolchain below for a single project, enforcing canonical-file hand-offs from &lt;span class=&quot;mono&quot;&gt;PRD.md&lt;/span&gt; through to deployment. If the idea is really multi-module, it points you up to &lt;span class=&quot;mono&quot;&gt;/roadmap&lt;/span&gt; instead." data-th="รัน toolchain 8 ขั้นด้านล่างสำหรับโปรเจกต์เดียว บังคับการส่งต่อไฟล์มาตรฐานตั้งแต่ &lt;span class=&quot;mono&quot;&gt;PRD.md&lt;/span&gt; จนถึง deploy ถ้าไอเดียเป็นหลายโมดูลจริง มันจะชี้ให้ขึ้นไปใช้ &lt;span class=&quot;mono&quot;&gt;/roadmap&lt;/span&gt; แทน">Runs the eight-stage toolchain below for a single project, enforcing canonical-file hand-offs from <span class="mono">PRD.md</span> through to deployment. If the idea is really multi-module, it points you up to <span class="mono">/roadmap</span> instead.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="toolchain">
+      <div class="sec-head">
+        <p class="eyebrow" data-en="The toolchain" data-th="ลำดับงาน">The toolchain</p>
+        <h2 data-en="A fixed order, run per project or per module" data-th="ลำดับคงที่ รันต่อโปรเจกต์หรือต่อโมดูล">A fixed order, run per project or per module</h2>
+        <p data-en="Every stage consumes the canonical file the previous stage wrote. The design-direction step is chosen once, then only documented downstream." data-th="ทุกขั้นกินไฟล์มาตรฐานที่ขั้นก่อนเขียนไว้ ส่วนขั้นเลือกดีไซน์เลือกครั้งเดียว แล้วแค่บันทึกต่อในขั้นถัดๆ ไป">Every stage consumes the canonical file the previous stage wrote. The design-direction step is chosen once, then only documented downstream.</p>
+      </div>
+      <div class="flow">
+        <div class="step"><span class="num">1</span><span class="si"><svg width="18" height="18"><use href="#i-file"/></svg></span><div class="name">ba</div><div class="role" data-en="Requirements &amp; edge cases" data-th="ความต้องการ &amp; edge case">Requirements &amp; edge cases</div></div>
+        <div class="step"><span class="num">2</span><span class="si"><svg width="18" height="18"><use href="#i-db"/></svg></span><div class="name">sa</div><div class="role" data-en="Schema, ER &amp; API" data-th="สคีมา, ER &amp; API">Schema, ER &amp; API</div></div>
+        <div class="step"><span class="num">3</span><span class="si"><svg width="18" height="18"><use href="#i-palette"/></svg></span><div class="name">uxui</div><div class="role" data-en="Design system &amp; screens" data-th="ดีไซน์ซิสเต็ม &amp; หน้าจอ">Design system &amp; screens</div></div>
+        <div class="step"><span class="num">4</span><span class="si"><svg width="18" height="18"><use href="#i-pointer"/></svg></span><div class="name">proto</div><div class="role" data-en="Clickable HTML" data-th="HTML คลิกได้">Clickable HTML</div></div>
+        <div class="step"><span class="num">5</span><span class="si"><svg width="18" height="18"><use href="#i-box"/></svg></span><div class="name">scaffold</div><div class="role" data-en="Runnable skeleton" data-th="โครงที่รันได้">Runnable skeleton</div></div>
+        <div class="step"><span class="num">6</span><span class="si"><svg width="18" height="18"><use href="#i-code"/></svg></span><div class="name">dev</div><div class="role" data-en="Feature code" data-th="โค้ดฟีเจอร์">Feature code</div></div>
+        <div class="step"><span class="num">7</span><span class="si"><svg width="18" height="18"><use href="#i-check"/></svg></span><div class="name">qa</div><div class="role" data-en="Tests &amp; automation" data-th="เทสต์ &amp; automation">Tests &amp; automation</div></div>
+        <div class="step"><span class="num">8</span><span class="si"><svg width="18" height="18"><use href="#i-server"/></svg></span><div class="name">devops</div><div class="role" data-en="Docker &amp; CI/CD" data-th="Docker &amp; CI/CD">Docker &amp; CI/CD</div></div>
+      </div>
+    </section>
+
+    <section id="skills">
+      <div class="sec-head">
+        <p class="eyebrow" data-en="What each specialist reads &amp; writes" data-th="แต่ละสกิลอ่านอะไร เขียนอะไร">What each specialist reads &amp; writes</p>
+        <h2 data-en="Nine skills, one canonical file each" data-th="เก้าสกิล แต่ละตัวเขียนไฟล์มาตรฐานของตัวเอง">Nine skills, one canonical file each</h2>
+        <p data-en="Hand-offs are enforced by filename, not by memory — which is what keeps the pipeline resumable and token-lean." data-th="การส่งต่อบังคับด้วยชื่อไฟล์ ไม่ใช่ความจำ — นี่คือสิ่งที่ทำให้ไปป์ไลน์ทำต่อได้และประหยัด token">Hand-offs are enforced by filename, not by memory — which is what keeps the pipeline resumable and token-lean.</p>
+      </div>
+      <div class="grid">
+        <div class="scard"><div class="scard-top"><span class="scard-ic"><svg width="18" height="18"><use href="#i-file"/></svg></span><h4>ba</h4></div><div class="desc" data-en="Bridges a raw idea into a developer-ready PRD with edge cases." data-th="เปลี่ยนไอเดียดิบเป็น PRD พร้อมใช้สำหรับ dev พร้อม edge case">Bridges a raw idea into a developer-ready PRD with edge cases.</div><div class="io"><span class="r">idea</span><span class="ar"><svg width="15" height="15"><use href="#i-arrow"/></svg></span><span class="w">PRD.md</span></div></div>
+        <div class="scard"><div class="scard-top"><span class="scard-ic"><svg width="18" height="18"><use href="#i-db"/></svg></span><h4>sa</h4></div><div class="desc" data-en="Turns the PRD into schema, ER diagrams and API contracts." data-th="เปลี่ยน PRD เป็นสคีมา, ER diagram และ API contract">Turns the PRD into schema, ER diagrams and API contracts.</div><div class="io"><span class="r">PRD.md</span><span class="ar"><svg width="15" height="15"><use href="#i-arrow"/></svg></span><span class="w">SA_BLUEPRINT.md</span></div></div>
+        <div class="scard"><div class="scard-top"><span class="scard-ic"><svg width="18" height="18"><use href="#i-palette"/></svg></span><h4>uxui</h4></div><div class="desc" data-en="Establishes the design system and screens with full states." data-th="วางดีไซน์ซิสเต็มและหน้าจอครบทุกสถานะ">Establishes the design system and screens with full states.</div><div class="io"><span class="r">PRD + blueprint</span><span class="ar"><svg width="15" height="15"><use href="#i-arrow"/></svg></span><span class="w">UXUI_DESIGN.md</span></div></div>
+        <div class="scard"><div class="scard-top"><span class="scard-ic"><svg width="18" height="18"><use href="#i-pointer"/></svg></span><h4>proto</h4></div><div class="desc" data-en="A single-file clickable HTML prototype, no backend needed." data-th="โปรโตไทป์ HTML คลิกได้ไฟล์เดียว ไม่ต้องมี backend">A single-file clickable HTML prototype, no backend needed.</div><div class="io"><span class="r">3 docs</span><span class="ar"><svg width="15" height="15"><use href="#i-arrow"/></svg></span><span class="w">mockups/*.html</span></div></div>
+        <div class="scard"><div class="scard-top"><span class="scard-ic"><svg width="18" height="18"><use href="#i-box"/></svg></span><h4>scaffold</h4></div><div class="desc" data-en="Runnable repo skeleton via official framework CLIs." data-th="โครง repo ที่รันได้ผ่าน CLI ทางการของเฟรมเวิร์ก">Runnable repo skeleton via official framework CLIs.</div><div class="io"><span class="r">blueprint</span><span class="ar"><svg width="15" height="15"><use href="#i-arrow"/></svg></span><span class="w">repo skeleton</span></div></div>
+        <div class="scard"><div class="scard-top"><span class="scard-ic"><svg width="18" height="18"><use href="#i-code"/></svg></span><h4>dev</h4></div><div class="desc" data-en="Production-ready feature code, paired with TDD and review." data-th="โค้ดฟีเจอร์พร้อมโปรดักชัน คู่กับ TDD และ review">Production-ready feature code, paired with TDD and review.</div><div class="io"><span class="r">all docs</span><span class="ar"><svg width="15" height="15"><use href="#i-arrow"/></svg></span><span class="w">source</span></div></div>
+        <div class="scard"><div class="scard-top"><span class="scard-ic"><svg width="18" height="18"><use href="#i-check"/></svg></span><h4>qa</h4></div><div class="desc" data-en="Test cases and automation scripts from the PRD and code." data-th="เทสต์เคสและสคริปต์ automation จาก PRD และโค้ด">Test cases and automation scripts from the PRD and code.</div><div class="io"><span class="r">code + PRD</span><span class="ar"><svg width="15" height="15"><use href="#i-arrow"/></svg></span><span class="w">tests</span></div></div>
+        <div class="scard"><div class="scard-top"><span class="scard-ic"><svg width="18" height="18"><use href="#i-server"/></svg></span><h4>devops</h4></div><div class="desc" data-en="Containerization, CI/CD pipelines and a deploy strategy." data-th="ทำคอนเทนเนอร์, CI/CD และวางกลยุทธ์ deploy">Containerization, CI/CD pipelines and a deploy strategy.</div><div class="io"><span class="r">repo</span><span class="ar"><svg width="15" height="15"><use href="#i-arrow"/></svg></span><span class="w">pipelines</span></div></div>
+      </div>
+    </section>
+
+    <section id="big">
+      <div class="sec-head">
+        <p class="eyebrow" data-en="Big builds" data-th="งานใหญ่">Big builds</p>
+        <h2 data-en="How roadmap scales to many modules" data-th="roadmap สเกลไปหลายโมดูลยังไง">How roadmap scales to many modules</h2>
+        <p data-en="Shared decisions are locked once at the program level; each module is then scoped just-in-time as its sprint begins." data-th="การตัดสินใจที่ใช้ร่วมกันถูกล็อกครั้งเดียวที่ระดับ program แล้วแต่ละโมดูลค่อย scope แบบ just-in-time ตอนสปรินต์ของมันเริ่ม">Shared decisions are locked once at the program level; each module is then scoped just-in-time as its sprint begins.</p>
+      </div>
+      <div class="prog">
+        <div class="prog-row">
+          <div class="pbox">
+            <div class="lab" data-en="Locked once — shared" data-th="ล็อกครั้งเดียว — ใช้ร่วม">Locked once — shared</div>
+            <h5>docs/program/</h5>
+            <ul><li>VISION.md</li><li>ARCHITECTURE.md</li><li>DATA_MODEL.md</li><li>DESIGN_SYSTEM.md</li><li>ROADMAP.md</li></ul>
+          </div>
+          <span class="prog-ar"><svg width="22" height="22"><use href="#i-arrow"/></svg></span>
+          <div class="pbox">
+            <div class="lab" data-en="Per module — just-in-time" data-th="ต่อโมดูล — just-in-time">Per module — just-in-time</div>
+            <h5>docs/modules/&lt;name&gt;/</h5>
+            <ul><li>PRD.md</li><li>SA_BLUEPRINT.md</li><li>UXUI_DESIGN.md</li><li data-en="… one /kickoff run each" data-th="… /kickoff หนึ่งรอบต่อโมดูล">… one /kickoff run each</li></ul>
+          </div>
+        </div>
+        <div class="note"><span class="ic"><svg width="18" height="18"><use href="#i-info"/></svg></span><span data-en="The Entity Catalog at the top of &lt;span class=&quot;mono&quot;&gt;DATA_MODEL.md&lt;/span&gt; lets a late module read only the tables it touches — so module 11 costs no more to scope than module 2. Schema evolves through additive migrations, never destructive rewrites." data-th="Entity Catalog บนหัว &lt;span class=&quot;mono&quot;&gt;DATA_MODEL.md&lt;/span&gt; ทำให้โมดูลที่มาทีหลังอ่านเฉพาะตารางที่เกี่ยวข้อง — โมดูลที่ 11 จึง scope แพงไม่ต่างจากโมดูลที่ 2 สคีมาวิวัฒน์ผ่าน migration แบบเพิ่มเข้า ไม่ใช่เขียนทับ">The Entity Catalog at the top of <span class="mono">DATA_MODEL.md</span> lets a late module read only the tables it touches — so module 11 costs no more to scope than module 2. Schema evolves through additive migrations, never destructive rewrites.</span></div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span data-en="&lt;strong&gt;Which one do I use?&lt;/strong&gt;&lt;br&gt;Several distinct modules whose data flows together, shipped across sprints → &lt;span class=&quot;mono&quot;&gt;/roadmap&lt;/span&gt;. One coherent project → &lt;span class=&quot;mono&quot;&gt;/kickoff&lt;/span&gt;. A single doc or component → a specialist skill directly. The skills self-route, so just start anywhere." data-th="&lt;strong&gt;ใช้ตัวไหนดี?&lt;/strong&gt;&lt;br&gt;หลายโมดูลที่ข้อมูลเชื่อมกัน ทยอยส่งเป็นสปรินต์ → &lt;span class=&quot;mono&quot;&gt;/roadmap&lt;/span&gt; หนึ่งโปรเจกต์ → &lt;span class=&quot;mono&quot;&gt;/kickoff&lt;/span&gt; เอกสารหรือ component เดียว → เรียก specialist ตรงๆ สกิลพวกนี้ route หากันเอง เริ่มที่ไหนก็ได้"><strong>Which one do I use?</strong><br>Several distinct modules whose data flows together, shipped across sprints → <span class="mono">/roadmap</span>. One coherent project → <span class="mono">/kickoff</span>. A single doc or component → a specialist skill directly. The skills self-route, so just start anywhere.</span>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    var root=document.documentElement;
+    var tBtn=document.getElementById('themeBtn'), tIcon=document.getElementById('themeIcon');
+    function setTheme(t){root.setAttribute('data-theme',t);tIcon.querySelector('use').setAttribute('href',t==='dark'?'#i-sun':'#i-moon');try{localStorage.setItem('cs-theme',t);}catch(e){}}
+    var savedT;try{savedT=localStorage.getItem('cs-theme');}catch(e){}
+    if(!savedT)savedT=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';
+    setTheme(savedT);
+    tBtn.addEventListener('click',function(){setTheme(root.getAttribute('data-theme')==='dark'?'light':'dark');});
+
+    var lBtn=document.getElementById('langBtn'), lLabel=document.getElementById('langLabel');
+    var nodes=document.querySelectorAll('[data-en]');
+    function setLang(l){
+      nodes.forEach(function(el){el.innerHTML=el.getAttribute(l==='th'?'data-th':'data-en');});
+      root.setAttribute('lang',l);
+      lLabel.textContent=l==='th'?'ไทย':'EN';
+      try{localStorage.setItem('cs-lang',l);}catch(e){}
+    }
+    var savedL;try{savedL=localStorage.getItem('cs-lang');}catch(e){}
+    if(!savedL)savedL=(navigator.language||'').toLowerCase().indexOf('th')===0?'th':'en';
+    setLang(savedL);
+    lBtn.addEventListener('click',function(){setLang(root.getAttribute('lang')==='th'?'en':'th');});
+  })();
+</script>
+</body>
+</html>
