@@ -15,7 +15,7 @@ brainstorm → /ba → /sa → [design direction] → /uxui → /proto → [scaf
 
 | # | Stage | Skill to invoke | Reads | Writes (canonical) |
 |---|-------|-----------------|-------|--------------------|
-| 0 | Brainstorm (optional) | `superpowers:brainstorming` if installed, else ask | user idea | — |
+| 0 | Brainstorm (optional) | `grill-me` (pressure-test via interview) and/or `superpowers:brainstorming` if installed, else ask | user idea | — |
 | 1 | Requirements | `ba` | idea | `docs/PRD.md` |
 | 2 | Technical blueprint | `sa` | `docs/PRD.md` | `docs/SA_BLUEPRINT.md` |
 | 3 | **Design direction** (DECISION) | `frontend-design` **OR** `ui-ux-pro-max` — pick ONE | PRD + blueprint | direction notes |

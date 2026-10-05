@@ -7,8 +7,12 @@ Lives at `~/.claude/skills/` (Mac/Linux) or `%USERPROFILE%\.claude\skills\` (Win
 ## Pipeline
 
 ```
-brainstorm → /ba → /sa → [design direction] → /uxui → /proto → /scaffold → /dev → /qa → /devops
+[/grill-me] → brainstorm → /ba → /sa → [design direction] → /uxui → /proto → /scaffold → /dev → /qa → /devops
 ```
+
+`/grill-me` is an optional pre-`/ba` step: a relentless one-question-at-a-time interview that pressure-tests
+a raw idea before it becomes a PRD, so `/ba` starts from a sharpened idea instead of a vague one. It writes
+no files — the resolved understanding just carries into the conversation that feeds `/ba`.
 
 `/kickoff` orchestrates the whole chain stage-by-stage, enforcing canonical-file hand-offs
 (`docs/PRD.md` → `docs/SA_BLUEPRINT.md` → `docs/UXUI_DESIGN.md` → `docs/mockups/`) and is resumable.
@@ -30,6 +34,7 @@ together, shipped across sprints → `/roadmap`; one coherent project → `/kick
 |-------|------|--------|
 | `roadmap` | program orchestrator for big multi-module/multi-sprint builds (triage → decompose → sprint plan → drive `/kickoff` per module) | `docs/program/{VISION,ARCHITECTURE,DATA_MODEL,DESIGN_SYSTEM,ROADMAP}.md` |
 | `kickoff` | orchestrator (sizes run, manages token budget, decision points) | — |
+| `grill-me` | optional pre-`/ba` interview that pressure-tests a raw idea one question at a time before it's written up | — |
 | `ba` | requirements → PRD | `docs/PRD.md` |
 | `sa` | technical blueprint (schema, API) | `docs/SA_BLUEPRINT.md` |
 | `uxui` | design system + screens (presents 2–3 direction options before locking) | `docs/UXUI_DESIGN.md` |
