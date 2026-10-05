@@ -7,9 +7,12 @@
   .\run.ps1 status  -Project C:\work\my-app
   .\run.ps1 approve -Project C:\work\my-app     # pass the current gate and continue
   .\run.ps1 resume  -Project C:\work\my-app     # continue after a block/crash
+  .\run.ps1 change "what to change | file" -Project C:\work\my-app   # restyle / new requirement / bigger fix on a built project
+  .\run.ps1 preview -Project C:\work\my-app     # run the built app with demo data (npm run demo)
+  .\run.ps1 program -Project C:\work\my-app     # multi-module build from docs\program\ROADMAP.md (made with /roadmap)
 #>
 param(
-  [Parameter(Mandatory, Position = 0)][ValidateSet('start', 'resume', 'approve', 'status')][string]$Command,
+  [Parameter(Mandatory, Position = 0)][ValidateSet('start', 'resume', 'approve', 'status', 'program', 'preview', 'change')][string]$Command,
   [Parameter(Position = 1)][string]$Idea,
   [string]$Project = (Get-Location).Path
 )
@@ -34,6 +37,15 @@ function Install-Agents {
   $dest = Join-Path $Project '.claude\agents'
   New-Item -ItemType Directory -Force $dest | Out-Null
   Copy-Item (Join-Path $Root 'agents\*.md') $dest -Force
+  $tpl = Join-Path $Project 'docs\pipeline\templates'
+  New-Item -ItemType Directory -Force $tpl | Out-Null
+  Copy-Item (Join-Path $Root 'templates\*') $tpl -Force
+  $stack = Join-Path $Project 'docs\STACK.md'
+  if (-not (Test-Path $stack)) { Copy-Item (Join-Path $Root 'stack.md') $stack }
+  elseif (-not (Select-String -Path $stack -Pattern '^## UI layer \(web\)' -Quiet)) {   # upgrade an older project STACK.md
+    $new = (Get-Content (Join-Path $Root 'stack.md') -Raw -Encoding UTF8)
+    if ($new -match '(?s)(## UI layer \(web\).*?)(?=## Local database)') { Add-Content $stack -Encoding UTF8 ("`n" + $Matches[1]) }
+  }
 }
 
 function Get-StateValue([string]$key) {
@@ -71,11 +83,13 @@ function Invoke-Pilot([string]$pilotCommand) {
     'Bash(git init:*)', 'Bash(git add:*)', 'Bash(git commit:*)', 'Bash(git status:*)',
     'Bash(git diff:*)', 'Bash(git log:*)',
     'Bash(ls:*)', 'Bash(cat:*)', 'Bash(mkdir:*)', 'Bash(mv:*)', 'Bash(cp:*)', 'Bash(pwd)',
-    'Bash(docker build:*)', 'Bash(docker --version)'
+    'Bash(docker build:*)', 'Bash(docker --version)', 'Bash(docker compose -f docker-compose.dev.yml:*)'
   )
   $denied = @(
     'Bash(git push:*)', 'Bash(npm publish:*)', 'Bash(npx vercel:*)', 'Bash(npx netlify:*)',
-    'Bash(npx gh-pages:*)', 'Bash(docker push:*)', 'Bash(rm -rf /*)'
+    'Bash(npx gh-pages:*)', 'Bash(docker push:*)', 'Bash(docker run:*)',
+    'Bash(docker compose -f docker-compose.dev.yml run:*)', 'Bash(docker compose -f docker-compose.dev.yml exec:*)',
+    'Bash(aws:*)', 'Bash(ssh:*)', 'Bash(scp:*)', 'Bash(rm -rf /*)'
   )
 
   $logDir = Join-Path $Project 'docs\pipeline'
@@ -97,7 +111,11 @@ function Invoke-Pilot([string]$pilotCommand) {
     throw "Claude CLI is not logged in. Run '$claude' once interactively and sign in (/login), then re-run this command."
   }
   if (Select-String -Path $log -Pattern 'hit your (session|usage) limit|usage limit reached' -Quiet) {
-    throw "Stopped: Claude usage limit reached. STATE.md may lag one stage. Run '.\run.ps1 resume' after the limit resets."
+    if (Test-Path $State) {
+      $hit = (Select-String -Path $log -Pattern 'limit' | Select-Object -Last 1).Line
+      Add-Content $State -Encoding UTF8 ("`n- {0:yyyy-MM-ddTHH:mm:ssZ} runner LIMIT - Claude usage limit reached: {1}" -f (Get-Date).ToUniversalTime(), $hit)
+    }
+    throw "Stopped: Claude usage limit reached (noted in STATE.md Log). STATE.md may lag one stage. Run '.\run.ps1 resume' after the limit resets."
   }
 }
 
@@ -110,20 +128,44 @@ switch ($Command) {
     Invoke-Pilot 'start docs/IDEA.md'
   }
   'resume' { Invoke-Pilot 'resume' }
+  'program' { Invoke-Pilot 'program' }
   'approve' {
     Assert-NotRunning
     $stage = Get-StateValue 'current_stage'
-    $gate = switch -Regex ($stage) { 'GATE 1' { 'gate1' } 'GATE 2' { 'gate2' } default { $null } }
+    $gate = switch -Regex ($stage) { 'GATE 1' { 'gate1' } 'GATE 2' { 'gate2' } 'GATE C' { 'gateC' } 'GATE V' { if ((Get-Content $State -Raw) -match '(?m)^mode:\s*program') { 'gate' } else { 'gateV' } } 'GATE [MSD]' { 'gate' } default { $null } }
     if (-not $gate) { throw "Nothing to approve - current stage is '$stage'. Run '.\run.ps1 status'." }
     (Get-Content $State -Raw -Encoding UTF8) -replace "(?m)^${gate}:\s*pending", "${gate}: approved" `
       -replace '(?m)^status:\s*awaiting_approval', 'status: running' |
       Set-Content $State -Encoding UTF8 -NoNewline
-    Add-Content $State -Encoding UTF8 ("`n- {0:s} {1} human APPROVED" -f (Get-Date), $gate)
+    Add-Content $State -Encoding UTF8 ("`n- {0:yyyy-MM-ddTHH:mm:ssZ} {1} human APPROVED" -f (Get-Date).ToUniversalTime(), $gate)
     Write-Host "[OK] $gate approved" -ForegroundColor Green
     Invoke-Pilot 'resume'
   }
   'status' {
     if (-not (Test-Path $State)) { Write-Host 'No pipeline in this project yet.'; break }
     Get-Content $State -Encoding UTF8
+    $owner = if (Test-Path $Lock) { (Get-Content $Lock -Raw).Trim() } else { $null }
+    if ($owner -and (Get-Process -Id $owner -ErrorAction SilentlyContinue)) { Write-Host "`nprocess: RUNNING (PID $owner)" } else { Write-Host "`nprocess: not running" }
+  }
+  'change' {
+    if (-not $Idea) { throw 'Usage: .\run.ps1 change "<what to change | file>" [-Project <dir>]' }
+    if (-not (Test-Path $State)) { throw "No pipeline in $Project yet - use 'start' first." }
+    Assert-NotRunning
+    if (Test-Path (Join-Path $Project '.git')) {
+      $dirty = git -C $Project status --porcelain -- . ':(exclude)docs/pipeline' ':(exclude).claude' ':(exclude)docs/changes'
+      if ($dirty) { throw "Uncommitted changes in $Project. Commit or stash them first (a change run edits existing files)." }
+    }
+    $dir = New-Item -ItemType Directory -Force (Join-Path $Project 'docs\changes')
+    $n = @(Get-ChildItem $dir.FullName -Filter 'CR-*.md').Count + 1
+    $cr = 'CR-{0:000}' -f $n
+    $body = if (Test-Path $Idea) { Get-Content $Idea -Raw -Encoding UTF8 } else { $Idea }
+    Set-Content (Join-Path $dir.FullName "$cr.md") -Encoding UTF8 ("# $cr`nStatus: requested`n`n## Request`n$body`n")
+    if (Test-Path (Join-Path $Project '.git')) { git -C $Project tag "pre-$cr" 2>$null; Write-Host "restore point: git tag pre-$cr" }
+    Invoke-Pilot "change $cr"
+  }
+  'preview' {
+    if (-not (Test-Path (Join-Path $Project 'package.json'))) { throw "No package.json in $Project - build the app first." }
+    Write-Host '>> starting the app with demo data (npm run demo) - Ctrl-C to stop' -ForegroundColor Cyan
+    Push-Location $Project; try { npm run demo } finally { Pop-Location }
   }
 }

@@ -8,12 +8,12 @@
 
 ```
 ไอเดีย → BA เขียน PRD → ⏸ คนอนุมัติ (Gate 1)
-      → SA ออกแบบระบบ → Designer → ต้นแบบ → Dev เขียนโค้ด → Reviewer → QA
+      → SA ออกแบบระบบ → Designer → ต้นแบบ → Dev เขียนโค้ด → QA (รวมเช็ก review)
       → ⏸ คนอนุมัติก่อน deploy (Gate 2) → DevOps เตรียมไฟล์ deploy
 ```
 
 - ไม่ต้องตอบคำถามระหว่างทาง ถ้าข้อมูลไม่พอ agent จะเลือกเองแล้วจดเหตุผลไว้ใน `docs/DECISIONS.md` ให้คนตรวจตอนอนุมัติ
-- ถ้า reviewer หรือ QA เจอปัญหา จะส่งกลับให้ Dev แก้เองได้สูงสุด 3 รอบ
+- ถ้า QA เจอปัญหา จะส่งกลับให้ Dev แก้เองได้สูงสุด 2 รอบ
 - หยุดกลางทางได้ (เครื่องดับ หรือ usage limit เต็ม) แล้วสั่ง `resume` ให้ทำต่อจากจุดเดิม
 - **ระบบจะไม่ deploy หรือ push ขึ้นที่ไหนเองเด็ดขาด** คำสั่งพวก `git push`, `npm publish`, `docker push` และคำสั่ง deploy ถูกบล็อกไว้ ขั้น DevOps แค่เตรียมไฟล์กับคำสั่งให้คนกดเอง
 - แยกจาก skill เดิม (`/ba`, `/sa`, `/kickoff` …) ทั้งหมด skill เดิมยังใช้แบบคุยโต้ตอบได้ตามปกติ
@@ -50,7 +50,7 @@
 # 2) อ่าน ~/work/my-app/docs/PRD.md กับ DECISIONS.md (แก้ได้) แล้วอนุมัติ
 ./autopilot/run.sh approve ~/work/my-app
 
-# 3) ดูผล review/QA แล้วอนุมัติขั้น deploy
+# 3) ดูผล QA แล้วอนุมัติขั้น deploy
 ./autopilot/run.sh approve ~/work/my-app
 
 # ดูสถานะ / ทำต่อหลังหยุดกลางทาง

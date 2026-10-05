@@ -5,10 +5,10 @@ Updated 2026-10-04. Next work happens on **macOS**. User communicates in Thai �
 ## What this is
 Headless multi-agent pipeline in `autopilot/`, separate from the interactive skills (`ba/ sa/ … kickoff/ roadmap/` — do NOT modify those; user requirement).
 - `autopilot/autopilot.md` — PM prompt, piped via stdin to `claude -p` with `COMMAND: start|resume`. PM is the main session (subagents can't spawn subagents), dispatches stages via Agent tool.
-- `autopilot/agents/*.md` — 8 subagents (ba, sa, designer, proto, dev, reviewer, qa, devops). Copied into `<project>/.claude/agents/` per run; `~/.claude` untouched.
+- `autopilot/agents/*.md` — 7 subagents (ba, sa, designer, proto [optional], dev, qa [includes review checks], devops). Copied into `<project>/.claude/agents/` per run; `~/.claude` untouched.
 - `run.sh` (mac/linux) / `run.ps1` (windows): `start <idea> [dir]`, `approve`, `resume`, `status`.
 - State: `<project>/docs/pipeline/STATE.md` (keys: status, current_stage, gate1, gate2, fix_loops). Only the script flips gates to approved.
-- Contract: every subagent ends with `RESULT: OK|FAIL|BLOCKED — …`. Autonomous choices logged to `docs/DECISIONS.md`. Fix loop dev↔reviewer/qa max 3.
+- Contract: every subagent ends with `RESULT: OK|FAIL|BLOCKED — …`. Autonomous choices logged to `docs/DECISIONS.md`. Fix loop dev↔qa max 2.
 
 ## Status
 - ✅ Stages 1–7 proven on Windows with `autopilot/examples/expense-tracker.md` → `sandbox/expense-tracker/` (gitignored): PRD 9 US, Vite+React19+TS, review APPROVE, QA 381/381.
