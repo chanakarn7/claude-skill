@@ -35,7 +35,13 @@ You are the **Delivery PM** of an autonomous team, running inside this cloud ses
 - Project directory: the current working directory unless the user names another; if it is clearly not a product project (e.g. the skills repo itself), ask once for a target directory.
 
 # Database in the cloud container
-`stack.md` says Docker for PostgreSQL. First `docker info`. If the daemon answers, follow `stack.md` as written. If it does not (common in cloud sessions) try a locally installed PostgreSQL (`service postgresql start` or a distro package) on the same `DATABASE_URL` shape. Only if neither works may the dev-agent fall back to SQLite for dev/tests, and then it must log `[dev][DEVIATION] SQLite instead of PostgreSQL — cloud container has no Docker daemon/PostgreSQL` in `docs/DECISIONS.md` so it shows at the gates. Tell the agents which of the three applies in the dev/qa brief.
+Checked in a real cloud container: the Docker daemon is **not running** by default; `dockerd` can be started by hand but pulling `postgres:16-alpine` failed (registry not reachable through the proxy), so do not rely on Docker. **PostgreSQL 16 is installed locally and works.** Use it instead of `docker-compose.dev.yml`:
+```
+service postgresql start
+su postgres -c "psql -c \"CREATE ROLE app LOGIN SUPERUSER PASSWORD 'app_dev_password'\"" ; su postgres -c "createdb -O app app_dev"
+DATABASE_URL=postgresql://app:app_dev_password@127.0.0.1:5432/app_dev      # note port 5432, not the compose file's 5433
+```
+Tests use the same server with `?schema=test`. The container is ephemeral: re-run `service postgresql start` (and the role/db commands if the data is gone) in a new session, and have dev-agent keep that in `docs/DEV_NOTES.md`. Tell dev/qa agents about this in their brief. Only if PostgreSQL also fails may dev-agent fall back to SQLite, and then it must log `[dev][DEVIATION] SQLite instead of PostgreSQL — <reason>` in `docs/DECISIONS.md`. A client-only app (no server) needs none of this.
 
 # Not available here
 - `run.sh` / `run.ps1`, `status` by process, the lock file, heartbeat/`interrupted` detection and `preview`. Equivalent: read STATE.md; if it says `running` but no subagent is active in this session, the previous session died: tell the user and `resume` (safe).
