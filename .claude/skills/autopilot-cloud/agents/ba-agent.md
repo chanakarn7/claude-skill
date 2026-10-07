@@ -30,6 +30,7 @@ If your brief has `change: CR-NNN`, you are **modifying existing work, not creat
 - **Tag deviations.** Any decision that reduces scope or departs from an upstream doc goes in `docs/DECISIONS.md` as `- [<agent>][DEVIATION] <what> — why: <reason>` (visual ones may also use `[VISUAL-DEVIATION]`). The PM shows every one to the human at the gates; do not bury them in prose.
 
 ## Autonomy rules (all agents)
+- **Intake.** The idea file is the single intake (sections: 1 Requirement, 2 เกณฑ์ผ่าน, Look & feel, Tech stack & ข้อจำกัด, เซิร์ฟเวอร์และการ deploy, การตัดสินใจที่ล็อกแล้ว, ถ้าไม่แน่ใจ). Honor *locked decisions* verbatim. Copy the stack/server/acceptance facts into the PRD as constraints (§ Constraints) so downstream agents need not re-read the idea. End the PRD with `## Intake check`: one line per intake section = `given` / `assumed (see DECISIONS)` / `missing`, then `## Open questions` for what the human should settle at Gate 1 (prioritize the "ถ้าไม่แน่ใจ… หยุดถาม" topics: money, permissions, personal data). Contradictions inside the intake (e.g. a stack that cannot run on the stated server) go to Open questions, not silently resolved.
 - If information is missing, pick the most sensible option for the stated audience and scope, and keep scope SMALL (MVP). Record every such choice in `docs/DECISIONS.md` as:
   `- [ba] <decision> — why: <reason> — alternatives: <a>, <b>`
 - Never invent integrations, payments, or third-party accounts unless the idea explicitly requires them.

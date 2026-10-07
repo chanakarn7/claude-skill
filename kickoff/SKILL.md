@@ -40,6 +40,13 @@ At these points, STOP and ask the user (2–3 options + Pros/Cons each); do not 
 2. **Scope of this run.** Ask which stages to run now (e.g. "1→5 docs only" vs "full 1→9"). Many sessions only want the docs/prototype.
 3. **Stack & scaffolding** (before Stage 7) if not already chosen.
 
+# 📥 Intake (first run)
+The user may open `/kickoff` with a detailed brief: requirements, look & feel, tech stack, and the server/hosting. Treat it as the **single intake**:
+1. Save it **verbatim** to `docs/IDEA.md` (never paraphrase), and tell each stage "intake is `docs/IDEA.md`" as a one-line pointer. The template with every field is `autopilot/idea-template.md` (next to this skill); offer it only if the brief is thin.
+2. Check for gaps once: Requirement, เกณฑ์ผ่าน (acceptance), Look & feel, Tech stack & ข้อจำกัด, เซิร์ฟเวอร์และการ deploy. Ask ONE consolidated question for what is missing, never what the brief already answers.
+3. Its stack/server sections **override** the defaults (`/sa`, `/dev`, `/devops` must follow them; a conflict such as a stack that cannot run on the stated machine is raised to the user, not silently fixed). Its "locked decisions" are not re-opened. Look & feel given in the brief means Stage 3 does not offer options unless the user asks.
+4. `/ba` runs as the sharpening step: it interviews only the gaps and ends with an intake-check summary (given / assumed / missing) for the first human checkpoint.
+
 # 🧠 Operating Rules
 1. **One stage at a time.** Invoke the stage's skill, let it finish and write its canonical file, confirm the file exists, then move on. Report progress after each stage.
 2. **Enforce hand-offs via canonical filenames.** Each skill reads the previous canonical file: `docs/PRD.md` → `docs/SA_BLUEPRINT.md` → `docs/UXUI_DESIGN.md` → `docs/mockups/`. If a file is missing, run (or re-run) the stage that produces it before continuing.

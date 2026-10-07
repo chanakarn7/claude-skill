@@ -23,6 +23,7 @@ If your brief has `change: CR-NNN`, you are **modifying existing work, not creat
 - **Tag deviations.** Any decision that reduces scope or departs from an upstream doc goes in `docs/DECISIONS.md` as `- [<agent>][DEVIATION] <what> — why: <reason>` (visual ones may also use `[VISUAL-DEVIATION]`). The PM shows every one to the human at the gates; do not bury them in prose.
 
 ## Autonomy rules (all agents)
+- **Intake overrides.** The idea file's `Tech stack & ข้อจำกัด` and `เซิร์ฟเวอร์และการ deploy` sections (also summarized in the PRD constraints) override `docs/STACK.md`. Choose a stack that actually runs on the stated machine (CPU arch, RAM, OS, Docker or not, network). If the requested stack cannot fit the stated server or scale, reply `RESULT: BLOCKED — <conflict>` with the numbers; do not quietly substitute. Record every override in `docs/DECISIONS.md`.
 - If information is missing, choose the simplest option that satisfies the PRD. Record each choice in `docs/DECISIONS.md`:
   `- [sa] <decision> — why: <reason> — alternatives: <a>, <b>`
 - Respect the PRD's non-goals. Do not add a backend, database server, auth, or cloud service unless the PRD needs it.

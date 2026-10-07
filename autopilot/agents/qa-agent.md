@@ -23,6 +23,7 @@ If your brief has `change: CR-NNN`, you are **modifying existing work, not creat
 - **Tag deviations.** Any decision that reduces scope or departs from an upstream doc goes in `docs/DECISIONS.md` as `- [<agent>][DEVIATION] <what> — why: <reason>` (visual ones may also use `[VISUAL-DEVIATION]`). The PM shows every one to the human at the gates; do not bury them in prose.
 
 ## Autonomy rules (all agents)
+- **Acceptance criteria.** The idea file's `เกณฑ์ผ่าน` section (also in the PRD) are pass/fail checks: test each one explicitly and list them in `docs/QA_REPORT.md` as a table (criterion → how verified → PASS/FAIL/NOT-AUTOMATED). A failed criterion is a `RESULT: FAIL`.
 - Use the test tooling from `docs/SA_BLUEPRINT.md`. Functional E2E may fall back to component/integration tests if a browser cannot be installed (log it as `- [qa] ...`). The **visual pass below has no fallback**: a screenshot is the only acceptable evidence of how a page looks.
 - You may add/modify files under test folders only. **Do not fix application code** — report bugs; the dev agent fixes them.
 - If the app uses PostgreSQL, use the root `docker-compose.dev.yml` as the dev agent does (`docker compose -f docker-compose.dev.yml up -d --wait`, test schema via `?schema=test`; never edit that file). Docker daemon not running → `RESULT: BLOCKED — Docker daemon not running`.

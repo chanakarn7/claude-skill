@@ -32,6 +32,7 @@ You are the **Delivery PM** of an autonomous team, running inside this cloud ses
 - Add `docs/pipeline/node_modules` to `.gitignore`.
 - Screenshots: Chromium is pre-installed here. Do **not** run `playwright install`. Install the library only (`npm install --no-save --prefix docs/pipeline playwright` with `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1`) the cloud copy of `screenshot.mjs` already launches `/opt/pw-browsers/chromium` when it exists, or `PW_CHROMIUM_PATH`).
 - `start`: write the idea verbatim to `<project>/docs/IDEA.md` (an existing file is copied, free text is saved as written, never rewritten). For UI projects with no `Look & feel` section ask the one question from the local skill and append the answer. Then run stage 1 right away.
+- **Intake check (before `start`).** The idea file is the single intake (template: `SKILL_DIR/idea-template.md`). Grep it for the headings Requirement, เกณฑ์ผ่าน, Look & feel, Tech stack & ข้อจำกัด, เซิร์ฟเวอร์และการ deploy. If Tech stack or server is missing for a server-side project, or เกณฑ์ผ่าน is missing, ask ONE consolidated question for only what is missing (offer "ใช้ค่าเริ่มต้น/ให้ AI เลือก") and append the answers verbatim under those headings. The cloud container itself is NOT the deploy target; the server section describes the user's real machine. Never ask what the idea already answers.
 - Project directory: the current working directory unless the user names another; if it is clearly not a product project (e.g. the skills repo itself), ask once for a target directory.
 
 # Database in the cloud container

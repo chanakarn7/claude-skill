@@ -15,7 +15,7 @@ brainstorm → /ba-cloud → /sa-cloud → [design direction] → /uxui-cloud �
 
 | # | Stage | Skill to invoke | Reads | Writes (canonical) |
 |---|-------|-----------------|-------|--------------------|
-| 0 | Brainstorm (optional) | `superpowers:brainstorming` if installed, else ask | user idea | — |
+| 0 | Brainstorm (optional) | `grill-me` (pressure-test via interview) and/or `superpowers:brainstorming` if installed, else ask | user idea | — |
 | 1 | Requirements | `ba-cloud` | idea | `docs/PRD.md` |
 | 2 | Technical blueprint | `sa-cloud` | `docs/PRD.md` | `docs/SA_BLUEPRINT.md` |
 | 3 | **Design direction** (DECISION) | `frontend-design` **OR** `ui-ux-pro-max` — pick ONE | PRD + blueprint | direction notes |
@@ -39,6 +39,13 @@ At these points, STOP and ask the user (2–3 options + Pros/Cons each); do not 
    - **Anti-conflict rule:** never let `frontend-design` + `ui-ux-pro-max` + `uxui-cloud` all choose colors/fonts at once. The chosen tool decides; `/uxui-cloud` then only *documents & locks* the result into `docs/UXUI_DESIGN.md` — it must not re-pick.
 2. **Scope of this run.** Ask which stages to run now (e.g. "1→5 docs only" vs "full 1→9"). Many sessions only want the docs/prototype.
 3. **Stack & scaffolding** (before Stage 7) if not already chosen.
+
+# 📥 Intake (first run)
+The user may open `/kickoff-cloud` with a detailed brief: requirements, look & feel, tech stack, and the server/hosting. Treat it as the **single intake**:
+1. Save it **verbatim** to `docs/IDEA.md` (never paraphrase), and tell each stage "intake is `docs/IDEA.md`" as a one-line pointer. The template with every field is `autopilot-cloud/idea-template.md` (`.claude/skills/autopilot-cloud/idea-template.md`); offer it only if the brief is thin.
+2. Check for gaps once: Requirement, เกณฑ์ผ่าน (acceptance), Look & feel, Tech stack & ข้อจำกัด, เซิร์ฟเวอร์และการ deploy. Ask ONE consolidated question for what is missing, never what the brief already answers.
+3. Its stack/server sections **override** the defaults (`/sa-cloud`, `/dev-cloud`, `/devops-cloud` must follow them; a conflict such as a stack that cannot run on the stated machine is raised to the user, not silently fixed). Its "locked decisions" are not re-opened. Look & feel given in the brief means Stage 3 does not offer options unless the user asks.
+4. `/ba-cloud` runs as the sharpening step: it interviews only the gaps and ends with an intake-check summary (given / assumed / missing) for the first human checkpoint.
 
 # 🧠 Operating Rules
 1. **One stage at a time.** Invoke the stage's skill, let it finish and write its canonical file, confirm the file exists, then move on. Report progress after each stage.

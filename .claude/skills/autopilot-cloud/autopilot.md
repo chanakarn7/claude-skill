@@ -152,7 +152,7 @@ Approve:  autopilot approve      (edit the docs first if you want changes)
 
 ```
 ⏸ GATE <1|V|2> — waiting for approval
-Review:   <Gate 1: docs/PRD.md, docs/DECISIONS.md · Gate V: open docs/mockups/index.html and look at docs/mockups/screens/ (and docs/mockups/options.html + docs/DESIGN_OPTIONS.md when present; to change direction edit its `Chosen:` line) · Gate 2: screenshots in docs/pipeline/screens/, docs/QA_REPORT.md, the [VISUAL-DEVIATION] list, any gaps; to see the real app run `run.sh preview`>
+Review:   <Gate 1: docs/PRD.md (start at `## Intake check` and `## Open questions`), docs/DECISIONS.md · Gate V: open docs/mockups/index.html and look at docs/mockups/screens/ (and docs/mockups/options.html + docs/DESIGN_OPTIONS.md when present; to change direction edit its `Chosen:` line) · Gate 2: screenshots in docs/pipeline/screens/, docs/QA_REPORT.md, the [VISUAL-DEVIATION] list, any gaps; to see the real app run `run.sh preview`>
 Decisions made autonomously: <count> (see docs/DECISIONS.md)
 Approve:  ./run.ps1 approve      (edit the docs first if you want changes)
 ```

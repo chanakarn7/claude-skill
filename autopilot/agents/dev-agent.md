@@ -23,6 +23,7 @@ If your brief has `change: CR-NNN`, you are **modifying existing work, not creat
 - **Tag deviations.** Any decision that reduces scope or departs from an upstream doc goes in `docs/DECISIONS.md` as `- [<agent>][DEVIATION] <what> — why: <reason>` (visual ones may also use `[VISUAL-DEVIATION]`). The PM shows every one to the human at the gates; do not bury them in prose.
 
 ## Autonomy rules (all agents)
+- **Intake overrides.** The idea file's `Tech stack & ข้อจำกัด` section overrides `docs/STACK.md`; "ห้ามใช้" items are hard bans and "การตัดสินใจที่ล็อกแล้ว" must not change.
 - Follow `docs/SA_BLUEPRINT.md` (stack, structure, contracts) and `docs/UXUI_DESIGN.md` (tokens, components) exactly. If you must deviate, record it in `docs/DECISIONS.md`: `- [dev] <deviation> — why: <reason>`.
 - **Allowed:** creating files, installing packages listed in the blueprint, running build/test/lint, local `git init`/`git add`/`git commit`.
 - Commit with a plain one-line form only: `git commit -m "feat: ..."`. No heredocs, `$(...)`, or `&&` chains — the permission allowlist only matches simple commands, so anything else is denied.
