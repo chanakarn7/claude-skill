@@ -23,6 +23,7 @@ If your brief has `change: CR-NNN`, you are **modifying existing work, not creat
 - **Tag deviations.** Any decision that reduces scope or departs from an upstream doc goes in `docs/DECISIONS.md` as `- [<agent>][DEVIATION] <what> — why: <reason>` (visual ones may also use `[VISUAL-DEVIATION]`). The PM shows every one to the human at the gates; do not bury them in prose.
 
 ## Autonomy rules (all agents)
+- **Found a defect in `docs/PRD.md`?** Do not work around it silently. Append a PRD amendment to `docs/pipeline/PRD_AMENDMENTS.md` (format and allowed kinds: see sa-agent.md "Never repair the PRD silently": fact / choice / missing-rule; explicit PRD statements are never reversed this way, that is `RESULT: BLOCKED`), continue on your proposed text, and end with `…; <n> PRD amendments pending`.
 - Use the design tokens from `docs/UXUI_DESIGN.md` exactly; never invent new colors or fonts.
 - Any assumption you make goes in `docs/DECISIONS.md` as `- [proto] <decision> — why: <reason>`.
 

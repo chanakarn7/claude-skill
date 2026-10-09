@@ -9,10 +9,13 @@ The command for this run is at the very bottom of this prompt (`COMMAND: ...`).
 | # | Stage | Subagent | Reads | Must write |
 |---|-------|----------|-------|------------|
 | 1 | Requirements | `ba-agent` | idea file | `docs/PRD.md` |
+| — | review (independent, 1 auto-return max) | `reviewer-agent` | idea, PRD | `docs/pipeline/REVIEW_G1.md` |
 | — | **GATE 1** — human approves PRD | — | — | — |
-| 2 | Technical blueprint | `sa-agent` | PRD | `docs/SA_BLUEPRINT.md` |
+| 2 | Technical blueprint | `sa-agent` | PRD, idea | `docs/SA_BLUEPRINT.md` |
+| — | review (independent, 1 auto-return max, never stops the run) | `reviewer-agent` | idea, PRD, blueprint | `docs/pipeline/REVIEW_GB.md` |
 | 3 | Design system | `designer-agent` | PRD, blueprint | `docs/UXUI_DESIGN.md` |
 | 4 | Clickable prototype (**optional**) | `proto-agent` | 3 docs | `docs/mockups/index.html` + screenshots in `docs/mockups/screens/` |
+| — | review (only when stage 4 ran) | `reviewer-agent` | PRD, design, mockups | `docs/pipeline/REVIEW_GV.md` |
 | — | **GATE V** — human views the prototype (skipped, with a warning, when stage 4 is skipped) | — | — | — |
 | 5 | Implementation | `dev-agent` | all docs | source code + `docs/DEV_NOTES.md` |
 | 6 | QA + review checks + visual pass | `qa-agent` | code + PRD + blueprint | tests + `docs/QA_REPORT.md` + screenshots in `docs/pipeline/screens/` |
@@ -35,6 +38,7 @@ gate1: pending | approved
 gateV: pending | approved | n/a
 gate2: pending | approved
 fix_loops: <int>
+review_loops: <int>   (reset to 0 at every gate; max 1 auto-return per gate)
 
 ## Stages
 - [x] 1 ba-agent → docs/PRD.md
@@ -71,6 +75,23 @@ fix_loops: <int>
 7. **Context budget.** Keep your own context lean: do not read large files yourself — subagents do the reading. Only read STATE.md, DECISIONS.md headings, and the RESULT lines.
 8. **Design gate (GATE V).** After stage 4 succeeds, set `gateV: pending`, `current_stage: GATE V`, `status: awaiting_approval`, print the gate summary, stop. If stage 4 was skipped, set `gateV: n/a` and remember to warn at Gate 2 that dev had no visual reference. On every resume, **before stage 5**, grep the first-line markers `Chosen:` in `docs/DESIGN_OPTIONS.md` (if it exists) and `Direction:` in `docs/UXUI_DESIGN.md`; if they differ, the human changed the direction: re-dispatch `designer-agent` then `proto-agent` once (brief: follow the `Chosen:` line), reset `gateV: pending`, and stop at GATE V again. Otherwise continue.
 9. **Gate 2 preconditions.** Before stopping at GATE 2, verify `docs/pipeline/screens/` holds at least one `.png` and `docs/QA_REPORT.md` has a `## Visual` section (unless the app has no UI). If not → `status: blocked`, "no screenshots: visual pass missing". Collect for the summary: the screenshot paths of the 5-6 main screens, every `[VISUAL-DEVIATION]` line grep'd from `docs/DECISIONS.md`, and any PASS-WITH-GAPS gaps.
+
+10. **Independent review before Gate 1 and Gate V.** Just before you would stop at GATE 1 or GATE V (so after stage 1, or after stage 4 succeeded), set `review_loops: 0` and dispatch `reviewer-agent` with `gate: 1` or `gate: V` (brief: project root, BASE and `change:` if any). Read only its RESULT line.
+    - `OK` (PASS) → log `review G<gate>: PASS (n notes)` and stop at the gate as usual.
+    - `FAIL` (BLOCK) and `review_loops` is 0 → increment it, re-dispatch the **owner named in the report** (Gate 1: `ba-agent`; Gate V: `proto-agent`, or `designer-agent` then `proto-agent` when the report says the design doc is at fault) with `docs/pipeline/REVIEW_G<gate>.md` as the fix list and "fix only the BLOCK items", then re-dispatch `reviewer-agent` once to verify.
+    - Still `FAIL` after that one return, or the reviewer itself BLOCKED → do **not** loop again: stop at the gate anyway and print the unresolved BLOCK items prominently in the gate summary. The human decides.
+    - **Cost controls (the review must stay cheap).**
+      1. **Mechanical pre-checks before any LLM review, no agent involved.** Gate B: run `node docs/pipeline/templates/check-contract.mjs . docs` and, when `PRD_AMENDMENTS.md` exists, `node docs/pipeline/templates/check-amendments.mjs . docs`. Gate V: the render report must show no errors and every screen needs screenshots. If any of these fail, skip the reviewer and go straight to the one return with the tool output as the fix list (this counts as the return).
+      2. **Order for the blueprint:** stage 2 → apply PRD amendments (rule 11) → mechanical checks → ONE reviewer pass. Never review the blueprint before the amendments are applied.
+      3. **Round 2 is a diff review.** Before a return, snapshot what the reviewer looked at (`mkdir -p docs/pipeline/snapshots/G<gate> && cp` the reviewed files there; `docs/pipeline/snapshots` goes in `.gitignore`). The verification pass is dispatched with `round: 2`, the snapshot path and the previous report: the reviewer then checks only that each previous BLOCK is fixed and reviews only the changed hunks (`diff -u`), not the whole document.
+      4. **NOTEs never cause a dispatch.** Only BLOCK items start a return; `[agent]` notes ride along with it (see below).
+      5. **Skip the reviewer when the stage changed nothing it checks:** a `change` run reviews only the gates its plan reaches, and a resume after a pure environment failure does not re-review unchanged files (compare against the snapshot; identical → reuse the last verdict).
+    - **NOTE routing.** Each NOTE carries `[human]` or `[agent]`. Gate summaries show ONLY the `[human]` notes (one line each, at most 4) plus the verdict and the counts (`+<a> agent notes in REVIEW_G<gate>.md`). `[agent]` notes are not shown to the human; they are passed to the owning agent as an optional fix list the next time that agent is dispatched for any reason (never a dispatch of its own, except in the blueprint's one-return loop where they ride along with the BLOCK items).
+    - The review never changes a gate: the human still approves. Show the verdict line in every gate summary (`Review: PASS | PASS after 1 return | UNRESOLVED <n> — docs/pipeline/REVIEW_G<gate>.md`).
+    - **Blueprint review (`gate: B`, runs automatically after stage 2, single-project mode only) never stops the run.** Same loop (`review_loops` reset to 0; one return to `sa-agent`, one re-review). PASS → log it and continue to stage 3. Still BLOCK after the one return → **carry forward**: log `review GB: UNRESOLVED n`, add the line `- [review][UNRESOLVED] blueprint: <n> items — docs/pipeline/REVIEW_GB.md` to `docs/DECISIONS.md`, put the path of `REVIEW_GB.md` in the briefs of stages 3 and 5 ("resolve or justify each BLOCK item, log the outcome"), and list the items in the NEXT human gate summary (Gate V, or Gate 2 when stage 4 was skipped) under `Review:`. A `NO-FIT` capacity verdict or a stage-2 `BLOCKED` is a normal BLOCKED. In a change run, review only if the plan includes stage 2.
+    - Skip the reviewer at Gate V when stage 4 was skipped. Gate 2 has no reviewer (qa-agent already covers it). A change (`change CR-NNN`) is reviewed only when its plan reaches Gate V, or at Gate C never.
+
+11. **PRD amendments from downstream agents.** Whenever a subagent's RESULT line says `PRD amendments pending` (or after any stage, if `docs/pipeline/PRD_AMENDMENTS.md` has entries with `status: open`), do this once before the next stage: dispatch `ba-agent` with `mode: amend` and that file; then log `amend: <n> applied, <m> rejected`. If the raising stage was stage 2, the blueprint review (rule 10, `gate: B`) runs after the amendments are applied and checks consistency; a mismatch goes back to `sa-agent` through the normal one-return loop. Amendments never stop the run, and they never replace Gate 1: the PRD the human approved is amended only by these three kinds (fact, choice, missing-rule). A rejected amendment that blocks the raising agent, or a `RESULT: BLOCKED — <conflict>`, is a normal BLOCKED. **Every amendment is shown to the human at the next gate**: in the gate summary add `PRD amended after approval: A1 …, A2 … (git diff docs/PRD.md; details in docs/pipeline/PRD_AMENDMENTS.md)`. In program mode apply the same with `BASE` paths.
 
 ## Change mode (iterating on a built project)
 
@@ -152,7 +173,8 @@ Approve:  autopilot approve      (edit the docs first if you want changes)
 
 ```
 ⏸ GATE <1|V|2> — waiting for approval
-Review:   <Gate 1: docs/PRD.md (start at `## Intake check` and `## Open questions`), docs/DECISIONS.md · Gate V: open docs/mockups/index.html and look at docs/mockups/screens/ (and docs/mockups/options.html + docs/DESIGN_OPTIONS.md when present; to change direction edit its `Chosen:` line) · Gate 2: screenshots in docs/pipeline/screens/, docs/QA_REPORT.md, the [VISUAL-DEVIATION] list, any gaps; to see the real app run `run.sh preview`>
+Review:   <PRD amended after approval (rule 11) and carried-forward `[review][UNRESOLVED]` blueprint items first, if any · Gate 1: docs/PRD.md (start at `## Intake check` and `## Open questions`), docs/DECISIONS.md · Gate V: open docs/mockups/index.html and look at docs/mockups/screens/ (and docs/mockups/options.html + docs/DESIGN_OPTIONS.md when present; to change direction edit its `Chosen:` line) · Gate 2: screenshots in docs/pipeline/screens/, docs/QA_REPORT.md, the [VISUAL-DEVIATION] list, any gaps; to see the real app run `run.sh preview`>
+Review:   <PASS | PASS after 1 return | UNRESOLVED n — docs/pipeline/REVIEW_G<gate>.md> + the `[human]` NOTEs, one line each, and `+<a> agent notes`  (Gates 1 and V; plus carried-forward blueprint items)
 Decisions made autonomously: <count> (see docs/DECISIONS.md)
 Approve:  ./run.ps1 approve      (edit the docs first if you want changes)
 ```

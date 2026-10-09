@@ -25,6 +25,12 @@ If your brief has `change: CR-NNN`, you are **modifying existing work, not creat
   - `Cost:` a table, one row per planned stage: what must be read (document sizes, with line counts), roughly how many files change, and size S/M/L; then `Cheaper options:` (e.g. a subset plan such as `3,4` only, doing it by hand in an interactive chat session, or splitting the CR).
   For `requirement` changes update `docs/PRD.md` in place: new stories numbered after the highest existing id with Given/When/Then, edited stories tagged `[CR-NNN]`, removed behavior marked `[REMOVED by CR-NNN]`. For `visual`/`redesign` add or update PRD §7b Look & feel from the request. End with `RESULT: OK — CR-NNN: <types>, plan <stages>`.
 
+## Amend mode
+If your brief has `mode: amend`, you patch the existing, human-approved PRD from `docs/pipeline/PRD_AMENDMENTS.md` — you do not rewrite or re-derive it.
+- For each entry with `status: open`: apply the `Proposed text` at the stated PRD location with the smallest possible edit, **tag the edited line `[amend A<n>]`**, and set the entry to `status: applied` (or `status: rejected — <reason>` if it is wrong or would reverse something the PRD states explicitly; a rejected entry that blocks downstream work → `RESULT: BLOCKED — <conflict>`). Verify facts yourself (e.g. `date -d`) before applying them.
+- Keep story ids and everything not named untouched; refresh the table of contents ranges if lines moved; log each as `- [ba][amend A<n>] <what changed> — why: <reason>` in `docs/DECISIONS.md`.
+- End with `RESULT: OK — <n> applied, <m> rejected`.
+
 ## Discipline
 - **Read selectively.** Long docs (PRD, blueprint, design) begin with a table of contents. Read the TOC (or `grep -n '^#'`) first, then open only the sections you need (Read with offset/limit). Never load a whole 800-line document to use two sections. If you write a document longer than ~200 lines, start it with a table of contents that lists line ranges.
 - **Tag deviations.** Any decision that reduces scope or departs from an upstream doc goes in `docs/DECISIONS.md` as `- [<agent>][DEVIATION] <what> — why: <reason>` (visual ones may also use `[VISUAL-DEVIATION]`). The PM shows every one to the human at the gates; do not bury them in prose.

@@ -1,6 +1,6 @@
 # Default stack (autopilot)
 
-Applies when the PRD needs a server, shared data, multi-user, or auth. A **client-only** app (no shared data) ignores this file and stays on Vite + TypeScript + localStorage/IndexedDB. An idea file may override anything here — record the override in `docs/DECISIONS.md`.
+Applies when the PRD needs a server, shared data, multi-user, or auth. A **client-only** app (no shared data) skips the server parts (`Layout`, the NestJS/Prisma scaffold, `Local database`, `Deployment targets`) and stays on Vite + TypeScript + localStorage/IndexedDB — **but the `UI layer` and `Visual verification` sections apply to every UI project, client-only or not**, using the Vite equivalents noted there. An idea file may override anything here — record the override in `docs/DECISIONS.md`.
 
 ## Layout — monorepo (npm workspaces)
 ```
@@ -22,13 +22,13 @@ docker-compose.dev.yml    dev/test PostgreSQL (copied from docs/pipeline/templat
   - `npx create-next-app@latest apps/web --ts --tailwind --eslint --app --use-npm --no-git --yes`
   - `npx @nestjs/cli new apps/api --package-manager npm --skip-git --strict`
 
-## UI layer (web)
-- **Component library: shadcn/ui** (`npx shadcn@latest init`, then `add` button input select dialog sheet badge card table tabs dropdown-menu tooltip sonner). Components live in `apps/web/src/components/ui` and are used for EVERY button, input, select, dialog, menu, table and badge. Hand-written replacements are forbidden unless the blueprint records why in `docs/DECISIONS.md`.
+## UI layer (every web UI project — Next.js app or client-only Vite app)
+- **Component library: shadcn/ui** (`npx shadcn@latest init`, then `add` button input select dialog sheet badge card table tabs dropdown-menu tooltip sonner). It supports both Next.js and Vite. Components live in `components/ui` (`apps/web/src/components/ui` in the monorepo; `src/components/ui` in a Vite app) and are used for EVERY button, input, select, dialog, menu, table and badge. Hand-written replacements are forbidden unless the blueprint records why in `docs/DECISIONS.md`.
 - **Icons:** lucide-react (or phosphor), one family only. No emoji as structural icons or status markers.
-- **Fonts:** `next/font` (google or local). The font named in the design doc must actually load; verify in the built page. Thai UI needs a Thai-capable font (Noto Sans Thai, IBM Plex Sans Thai, Prompt, Sarabun).
-- **Charts:** recharts (or similar) whenever the PRD has a dashboard or summary screen.
+- **Fonts:** the font named in the design doc must actually load; verify in the built page. Next.js: `next/font` (google or local). Vite: `@fontsource/<family>` packages imported in the entry file (local, no CDN), or a `<link>` in `index.html`. Thai UI needs a Thai-capable font (Noto Sans Thai, IBM Plex Sans Thai, Prompt, Sarabun).
+- **Charts:** recharts (or similar) whenever the PRD has a dashboard or summary screen. A PRD that asks only for a simple bar list may use plain CSS/SVG bars (record why in `docs/DECISIONS.md`).
 - **Theming:** CSS variables from the design tokens; light + dark + system with a visible toggle, unless the idea file says single-theme.
-- **Utility CSS:** Tailwind utilities in JSX. The global stylesheet holds tokens and resets only, not component classes.
+- **Utility CSS:** Tailwind utilities in JSX (Next.js: `create-next-app --tailwind`; Vite: the `@tailwindcss/vite` plugin). The global stylesheet holds tokens and resets only, not component classes.
 
 ## Visual verification (all UI projects)
 - `docs/pipeline/templates/screenshot.mjs` (Playwright) renders pages and captures screenshots at 1440 and 390 px in light and dark; proto-agent, dev-agent and qa-agent use it. Setup is in the script header.

@@ -44,7 +44,7 @@ assert_not_running() {
 # Keep runtime files out of git (they change on every run).
 ensure_gitignore() {
   local gi="$PROJECT/.gitignore"; touch "$gi"
-  for l in 'docs/pipeline/.lock' 'docs/pipeline/.heartbeat' 'docs/pipeline/.base_commit' 'docs/pipeline/run-*.log' 'docs/pipeline/node_modules'; do
+  for l in 'docs/pipeline/.lock' 'docs/pipeline/.heartbeat' 'docs/pipeline/.base_commit' 'docs/pipeline/run-*.log' 'docs/pipeline/node_modules' 'docs/pipeline/snapshots'; do
     grep -qxF "$l" "$gi" || echo "$l" >> "$gi"
   done
 }

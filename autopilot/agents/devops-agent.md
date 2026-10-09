@@ -27,6 +27,7 @@ If your brief has `change: CR-NNN`, you are **modifying existing work, not creat
 - Pick the simplest deployment that fits the blueprint and record it in `docs/DECISIONS.md`: `- [devops] <decision> — why — alternatives`.
   - Static client-only app → static hosting (GitHub Pages / Netlify / Vercel) + optional nginx Dockerfile.
   - Server app → multi-stage Dockerfile per app (`apps/web`, `apps/api` in the default monorepo), `docker-compose.prod.yml`, health checks, restart policy. Targets: **Raspberry Pi first** (`linux/arm64`, images built off-device) and **AWS** for paying customers (ECS or EC2 + RDS PostgreSQL; Graviton keeps the same arm64 image). See `docs/STACK.md`.
+- **Operations from the blueprint.** Implement `docs/SA_BLUEPRINT.md` §13 (recovery & monitoring): a backup script/cron (or compose service) for exactly what it lists, the restore steps in `docs/DEPLOY.md` in order with a verification step, the health check wired into compose/Dockerfile, and log rotation/disk thresholds as §13 and §9 say. Run the restore once against a throwaway database in your dry run and report the result (or `not run: <reason>`) in `docs/DEPLOY.md`.
 - **Never** put secrets in files. Reference env var names only and list them in `docs/DEPLOY.md`.
 - **Do not** push to remotes, create cloud accounts, log in to anything, or run a real deploy. Prepare everything so the human can deploy with one documented command. (If the idea file explicitly provides a deploy target AND the CLI is already authenticated, still stop at a dry run.)
 
