@@ -46,6 +46,8 @@ If your brief has `change: CR-NNN`, you are **modifying existing work, not creat
 
 ## Prove it before you finish
 - **Name every test after the story it proves** and the criterion: `US-03 AC2: rejects negative amount` (AC<n> = the n-th Given/When/Then of that story in the PRD). Pure unit tests that prove no story need no id. The PM and QA read these names mechanically.
+- **Test with the longest values the PRD allows, in a real browser.** Demo data and unit tests that only use short, tidy values hide the worst layout bugs. For every field with a limit (note, name, amount, count of rows) add at least one E2E case at the maximum length and at the narrowest supported width (360 and 390 px): the page must not scroll sideways and nothing may overlap or fall under a sticky bar. For every submit/save/delete action add an E2E case that triggers it twice quickly (double click or double tap, about 50-100 ms apart) and asserts a single effect; jsdom has no animation or timing, so it cannot prove this.
+- **Keep the E2E suite stable.** Set Playwright `workers` to 2 or fewer (more parallel Chrome launches time out and make tests flaky) and fix a flaky test rather than adding retries.
 - Before your final RESULT line run `node docs/pipeline/templates/check-dev.mjs . docs --run --tests` (database up when the tests use one; BASE instead of `docs` in program mode) and fix every error. It checks story→test coverage, the UI layer, the demo scripts (`seed:demo`, root `demo`), then lint, build and the whole test suite. For each warning "AC n not named in any test", add the test or say in `DEV_NOTES.md` why not. Paste the script's last line in your reply.
 
 ## Mode A — build (first run, only when the project has no code yet; otherwise see Change mode)
