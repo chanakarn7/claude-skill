@@ -32,7 +32,7 @@ Check, with evidence:
 7. **Internal consistency.** Story ids unique, TOC line ranges roughly right, no section left as a placeholder.
 
 ## Gate V — prototype vs PRD and design (`docs/PRD.md`, `docs/UXUI_DESIGN.md`, `docs/DESIGN_OPTIONS.md`, `docs/mockups/`)
-Check, with evidence (open files; run commands; look at the screenshots in `docs/mockups/screens/` with Read):
+First run `node docs/pipeline/templates/check-design.mjs . docs` and put its output in the report: every `error` line is a BLOCK (owner: proto-agent; designer-agent when the error is in `UXUI_DESIGN.md`, e.g. contrast pairs or the Screens table). The tool already proves token/palette use, contrast ratios, story-to-screen coverage, `data-screen` presence, resolvable links and screenshot existence, so do not re-derive them; spend your effort on what only judgment can see below. Check, with evidence (open files; run commands; look at the screenshots in `docs/mockups/screens/` with Read):
 1. **Screens.** Every key page in the PRD exists in `docs/mockups/index.html` (grep ids/titles) and is reachable from navigation; list missing ones.
 2. **Flows.** Each user story's main flow can be completed in the prototype (the clickable path exists; no dead buttons or links to missing targets: grep `href="#`/handlers and check the targets exist).
 3. **Render evidence.** Screenshots exist for every screen at 1440 and 390 px, light and dark when the design has a dark theme; the render check report (`docs/mockups/screens/report.json` or the proto's own log) shows no errors; any `[VISUAL-DEVIATION]` is logged. Read at least the main screens' screenshots and report visible defects (overflowing or overlapping text, unreadable contrast, empty page, missing Thai font glyph boxes).

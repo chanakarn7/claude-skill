@@ -32,7 +32,8 @@ Read `docs/PRD.md`, `docs/SA_BLUEPRINT.md`, `docs/UXUI_DESIGN.md` (and `docs/DES
 
 - **One self-contained file**: inline CSS and JS; only external loads allowed are Google Fonts and well-known CDNs. Must open by double-click — no build, no server.
 - Use the design doc's tokens and **load its fonts for real** (a Thai UI must render with a Thai-capable font).
-- Every screen from the design doc is reachable (simple hash router or show/hide).
+- Every screen from the design doc's Screens table is reachable (simple hash router or show/hide), and its root element carries **`data-screen="<screen-id>"`** with exactly that id. Hash links go only to ids/screens that exist.
+- **Colors only from the design doc**: define the tokens as CSS variables from `UXUI_DESIGN.md` and use `var(--…)` everywhere; no other hex literal (the checker rejects them).
 - **Full demo data**, not a sample: realistic volume (e.g. a team of 8-10, every status, empty/overloaded/closed cases) so screens look like the real product. Happy path of every user story clickable end to end.
 - Show empty, loading, and error states — add a small floating "State" switcher to toggle them. Light and dark themes with a visible toggle (unless single-theme).
 - Responsive: works at 390px and at 1440px.
@@ -40,11 +41,12 @@ Read `docs/PRD.md`, `docs/SA_BLUEPRINT.md`, `docs/UXUI_DESIGN.md` (and `docs/DES
 
 ## Prove it renders (mandatory)
 1. **Run what you wrote at least once.** Date logic: never build dates with an offset (`T00:00:00+07:00`) and read them with `getUTC*`; use `T00:00:00Z` with `getUTC*` throughout. Any loop must have a guaranteed exit.
-2. Set up the capture tool once: `npm install --no-save --prefix docs/pipeline playwright` then `npx --prefix docs/pipeline playwright install chromium` (the script is `docs/pipeline/templates/screenshot.mjs`; its header documents the config).
-3. Write `docs/pipeline/screens.proto.config.mjs` (file:// URL of `docs/mockups/index.html`, one route per screen, `font` set to the design doc's font), run the script, and fix every reported problem (hang, script/console error, font not loaded, empty page, overflow). Screenshots land in `docs/mockups/screens/`.
-4. **Read at least the key-page screenshots yourself** (Read supports images) and fix anything ugly: cramped or empty areas, unreadable text, off-palette colors, broken alignment.
-5. If `docs/DESIGN_OPTIONS.md` exists, also write `docs/mockups/options.html`: the **#1 key page** rendered once per option (switch by a `data-direction` attribute and per-option CSS variables, side-by-side or tabbed), and capture it into `docs/mockups/screens/options/`, so the human can choose at the design gate.
-6. If Chromium cannot be installed or the page cannot be rendered → `RESULT: BLOCKED — cannot render prototype: <reason>`. Never hand over a prototype nobody opened.
+2. Set up the capture tool once: `npm install --no-save --prefix docs/pipeline playwright` then `npx --prefix docs/pipeline playwright install chromium` (skip the `install chromium` step when `/opt/pw-browsers/chromium` exists, as in cloud containers; the script uses it automatically) (the script is `docs/pipeline/templates/screenshot.mjs`; its header documents the config).
+3. Write `docs/pipeline/screens.proto.config.mjs` (file:// URL of `docs/mockups/index.html`, one route per screen **labelled with its screen-id** (so files are named `<screen-id>-<viewport>-<theme>.png`), `font` set to the design doc's font), run the script, and fix every reported problem (hang, script/console error, font not loaded, empty page, overflow). Screenshots land in `docs/mockups/screens/`.
+4. **Run the design check and fix every error:** `node docs/pipeline/templates/check-design.mjs . docs` (screens present with `data-screen`, links resolve, no off-palette colors, screenshots exist per screen, contrast pairs valid).
+5. **Read at least the key-page screenshots yourself** (Read supports images) and fix anything ugly: cramped or empty areas, unreadable text, off-palette colors, broken alignment.
+6. If `docs/DESIGN_OPTIONS.md` exists, also write `docs/mockups/options.html`: the **#1 key page** rendered once per option (switch by a `data-direction` attribute and per-option CSS variables, side-by-side or tabbed), and capture it into `docs/mockups/screens/options/`, so the human can choose at the design gate.
+7. If Chromium cannot be installed or the page cannot be rendered → `RESULT: BLOCKED — cannot render prototype: <reason>`. Never hand over a prototype nobody opened.
 
 This prototype and its screenshots are the visual contract for the dev agent; keep the markup semantic so it can be lifted into components.
 

@@ -28,11 +28,14 @@ Before generating, gather what you need. Prefer reading existing docs over askin
 8. **Clear boundary with `/dev-cloud`:** This is a throwaway prototype — NO real API calls, NO database, NO auth, NO secrets. Logic may be faked/simplified. Note this explicitly in a footer.
 
 # ⚙️ Strict Rules
-- Output a real file written to `docs/mockups/<name>.html` (create the folder if needed), then state the path and offer to open it (`open <path>` on macOS).
+- Output a real file written to **`docs/mockups/index.html`** (the main file; extra surfaces may be extra files, create the folder if needed), then state the path and offer to open it (`open <path>` on macOS).
 - NO external dependencies beyond the Tailwind CDN and Google Fonts links. No frameworks, no import maps, no React build.
 - NO placeholders or "TODO" — every screen and control in scope must be filled and functional.
 - Keep all CSS/JS inline in the single file. Accessibility basics: `aria-*` on toggles/dialogs, touch targets ≥ 44px, meaningful labels.
 - Do not modify product source code or the design docs; the prototype is additive only.
+- **Checkable conventions (same as the autopilot `proto-agent`):** every screen root carries `data-screen="<screen-id>"` using the ids from the design doc's Screens table; every color is a CSS variable (or Tailwind token) from `UXUI_DESIGN.md`, no other hex literal; hash links go only to ids/screens that exist; the tokens are mirrored in the inline config, never invented.
+- **Prove it renders:** set up the capture tool (`npm install --no-save --prefix docs/pipeline playwright`; use `/opt/pw-browsers/chromium` when it exists instead of `playwright install`), copy `screenshot.mjs` from `.claude/skills/autopilot-cloud/templates/` into `docs/pipeline/templates/`, capture every screen (labels = screen ids) at 1440 and 390 px, light and dark, read the key-page screenshots yourself and fix what is ugly. Then run `node docs/pipeline/templates/check-design.mjs . docs` and fix every error before handing over.
+- If `docs/IDEA.md` has a Look & feel section it is already reflected in the design doc: do not re-ask. A PRD defect found while prototyping is raised with the user and recorded in `docs/pipeline/PRD_AMENDMENTS.md`, not worked around silently.
 
 # 📝 Output Format
 1. **Prototype Summary:** Short markdown list of which flows/surfaces are included and the design tokens reused.

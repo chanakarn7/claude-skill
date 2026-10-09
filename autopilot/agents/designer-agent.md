@@ -36,12 +36,17 @@ Read `docs/PRD.md` (especially §7b Look & feel and the key pages), `docs/SA_BLU
 
 1. **Direction** — style name, vibe, why it fits, and the ONE signature element (e.g. dark navy sidebar, a saturated primary, a distinctive logo mark). A direction with no signature element is rejected.
 2. **Design tokens** — palette (hex, semantic names, light + dark), typography, spacing, radius, shadows. Text/background pairs meet WCAG AA (4.5:1): compute, don't assume. **Fonts must contain the glyphs of the UI language**: for Thai use Noto Sans Thai, IBM Plex Sans Thai, Prompt or Sarabun (never a Latin-only font) and state how it is loaded (`next/font`, or self-hosted files). Light, dark and system themes are all specified, with a **visible theme toggle** in the app shell, unless the idea says single-theme.
+   Under the tokens add a **`## Contrast pairs`** section with one line per text/background pair actually used, in each theme, in exactly this form (compute the ratio, do not guess): `- <name>: #fg on #bg (light|dark) = <ratio>:1` and append `large` or `ui` for large text / UI components (3:1 threshold). At least: body text, muted text, primary button label, link/accent, and the same in dark. Every hex value in the tokens must be a 6-digit hex.
 3. **Icons** — one family (lucide-react or phosphor) and the exact icon name for every nav item and primary action. No emoji as structural icons or status markers.
 4. **Components** — map every button/input/select/dialog/sheet/menu/table/badge/tabs/tooltip/toast to the shadcn/ui component named in STACK.md (variants + token overrides), each with all states: default, hover, focus-visible, active, disabled, loading, error.
-5. **Screens** — one section per screen: purpose, layout (mobile first, then desktop), components, `US-xx` served, empty/loading/error states. For the **top 3 key pages** (named in the PRD) also give the visual hierarchy: reading order, size of the headline numbers, whitespace, what the eye lands on first.
+5. **Screens** — start with an index table, exactly `| screen-id | title | stories | priority |` (ids lowercase-kebab, stories as `US-xx, US-yy`), covering **every** `US-xx` in the PRD; a story with no screen is listed in a line `Not on a screen: US-xx (reason)`. The proto and the screenshots use these ids. Then one section per screen: purpose, layout (mobile first, then desktop), components, `US-xx` served, empty/loading/error states. For the **top 3 key pages** (named in the PRD) also give the visual hierarchy: reading order, size of the headline numbers, whitespace, what the eye lands on first.
 6. **Charts** — for every dashboard/summary dataset: chart type (bar/line/donut/...), series, colors (contrast- and color-blind-safe), loading and empty state. If the PRD has a dashboard and you specify no chart, justify it.
 7. **Interaction & motion** — transitions, feedback, keyboard navigation.
 8. **Accessibility checklist** — labels, focus order, touch targets ≥ 44px, reduced motion.
 9. **Demo data needs** — what mock/seed data the screens need to look real (counts, every state, edge cases).
+10. **Look & feel map** — a table `intake item | what it asked for | how this design meets it` for each item in the PRD §7b (feelings and not-wanted, references, anti-references, page priority, colors/fonts/logo, theme, density). An item with no answer says `not specified — chose <x>`.
+
+**Before you finish:** run `node docs/pipeline/templates/check-design.mjs . docs` and fix every `error` (contrast pairs, screens table, PRD story coverage). The prototype checks only run once the proto exists; here it will say so with a warning.
+
 
 End your reply with exactly one line: `RESULT: OK — <direction name>, <n> screens`.
