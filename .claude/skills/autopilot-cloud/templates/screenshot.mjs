@@ -21,6 +21,11 @@
 //     timeoutMs: 10000,
 //   };
 //
+// Checks per capture (no LLM): hang, script/console errors, missing font, empty page, horizontal overflow (warning-level),
+//   overlapping elements (partial overlap of text/controls; fully contained things such as an icon inside an input are fine),
+//   clipped text, and as warnings: text under 12px, tap targets under 44px on mobile.
+//   Intentional overlaps (avatar stacks, decorative layers): put data-allow-overlap on the element or an ancestor.
+//   position:fixed / sticky elements (banners, floating switchers) are ignored.
 // Output: one PNG per route x viewport x theme, plus <outDir>/report.json and a summary table.
 // Exit code: 0 = all rendered cleanly, 1 = hang / script error / console error / font not loaded, 2 = Playwright or Chromium missing.
 
@@ -62,7 +67,7 @@ for (const scheme of schemes) {
     catch (e) { errors.push('login failed: ' + e.message); }
 
     for (const r of cfg.routes) {
-      const row = { route: r.path, label: r.label ?? slug(r.path), viewport: vp.label, theme: scheme, file: '', problems: [] };
+      const row = { route: r.path, label: r.label ?? slug(r.path), viewport: vp.label, theme: scheme, file: '', problems: [], warnings: [] };
       const before = errors.length;
       try {
         await page.goto(cfg.baseUrl + r.path, { waitUntil: 'load', timeout });
@@ -83,6 +88,52 @@ for (const scheme of schemes) {
             };
           }, cfg.font ?? null);
           row.bodyFont = info.bodyFont;
+
+          // Layout audit (no LLM): the things a reviewer used to catch only by looking at the image.
+          const audit = await page.evaluate((mobile) => {
+            const CAP = 8;
+            const vis = (el) => { const s = getComputedStyle(el); if (s.display === 'none' || s.visibility === 'hidden' || parseFloat(s.opacity) === 0) return false; const r = el.getBoundingClientRect(); return r.width > 1 && r.height > 1; };
+            const name = (el) => { const t = (el.innerText || el.value || el.getAttribute('aria-label') || '').trim().replace(/\s+/g, ' ').slice(0, 24); const c = typeof el.className === 'string' && el.className.trim() ? '.' + el.className.trim().split(/\s+/)[0] : ''; return `<${el.tagName.toLowerCase()}${el.id ? '#' + el.id : ''}${c}>${t ? ` "${t}"` : ''}`; };
+            const ownText = (el) => [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim());
+            const control = (el) => /^(BUTTON|A|INPUT|SELECT|TEXTAREA|IMG|SVG)$/i.test(el.tagName) || el.getAttribute('role') === 'button';
+            const exempt = (el) => { for (let e = el; e && e !== document.documentElement; e = e.parentElement) { if (e.hasAttribute && e.hasAttribute('data-allow-overlap')) return true; const p = getComputedStyle(e).position; if (p === 'fixed' || p === 'sticky') return true; } return false; };
+            const box = (el) => {   // text blocks: the box of the text itself, not the full-width element
+              if (ownText(el) && !control(el)) {
+                const rg = document.createRange(); let l = Infinity, t = Infinity, r = -Infinity, b = -Infinity;
+                for (const n of el.childNodes) if (n.nodeType === 3 && n.textContent.trim()) { rg.selectNodeContents(n); for (const q of rg.getClientRects()) { if (q.width < 1 || q.height < 1) continue; l = Math.min(l, q.left); t = Math.min(t, q.top); r = Math.max(r, q.right); b = Math.max(b, q.bottom); } }
+                if (l < Infinity) return { l, t, r, b };
+              }
+              const q = el.getBoundingClientRect(); return { l: q.left, t: q.top, r: q.right, b: q.bottom };
+            };
+            const cands = [...document.body.querySelectorAll('*')].filter((el) => vis(el) && (ownText(el) || control(el)) && !exempt(el)).slice(0, 1500);
+            const boxes = cands.map(box);
+            const overlaps = [], clipped = [], small = [], tiny = [];
+            for (let i = 0; i < cands.length && overlaps.length < CAP; i++) for (let j = i + 1; j < cands.length && overlaps.length < CAP; j++) {
+              const a = cands[i], c = cands[j];
+              if (a.contains(c) || c.contains(a)) continue;
+              const A = boxes[i], B = boxes[j];
+              const w = Math.min(A.r, B.r) - Math.max(A.l, B.l), h = Math.min(A.b, B.b) - Math.max(A.t, B.t);
+              if (w <= 2 || h <= 2) continue;
+              const inter = w * h, minArea = Math.min((A.r - A.l) * (A.b - A.t), (B.r - B.l) * (B.b - B.t));
+              if (minArea <= 0 || inter / minArea < 0.15 || inter / minArea >= 0.9) continue;   // fully contained = intentional (icon in input, badge on card)
+              overlaps.push(`${name(a)} overlaps ${name(c)} (${Math.round((inter / minArea) * 100)}% of the smaller)`);
+            }
+            for (const el of cands) {
+              const s = getComputedStyle(el);
+              if (ownText(el) && clipped.length < CAP) {
+                const hx = /hidden|clip/.test(s.overflowX) && el.scrollWidth > el.clientWidth + 1 && s.textOverflow !== 'ellipsis';
+                const hy = /hidden|clip/.test(s.overflowY) && el.scrollHeight > el.clientHeight + 1 && !(s.webkitLineClamp && s.webkitLineClamp !== 'none');
+                if (hx || hy) clipped.push(`${name(el)} text is cut off`);
+              }
+              if (ownText(el) && parseFloat(s.fontSize) < 12) small.push(name(el));
+              if (mobile && /^(BUTTON|A|INPUT|SELECT)$/i.test(el.tagName) && s.display !== 'inline') { const q = el.getBoundingClientRect(); if (q.width < 44 || q.height < 44) tiny.push(name(el)); }
+            }
+            return { overlaps, clipped, small: small.length, smallEx: small.slice(0, 3), tiny: tiny.length, tinyEx: tiny.slice(0, 3) };
+          }, vp.width < 768);
+          for (const o of audit.overlaps) row.problems.push('overlap: ' + o);
+          for (const c of audit.clipped) row.problems.push('clipped: ' + c);
+          if (audit.small) row.warnings.push(`${audit.small} text element(s) under 12px, e.g. ${audit.smallEx.join(', ')}`);
+          if (audit.tiny) row.warnings.push(`${audit.tiny} tap target(s) under 44px, e.g. ${audit.tinyEx.join(', ')}`);
           if (info.overflowX) row.problems.push('horizontal overflow');
           if (!info.fontLoaded) row.problems.push(`font not loaded: ${cfg.font}`);
           if (info.textLength < 20) row.problems.push('page is (almost) empty');
@@ -100,7 +151,7 @@ await browser.close();
 
 fs.writeFileSync(path.join(outDir, 'report.json'), JSON.stringify(rows, null, 2));
 console.log('route | viewport | theme | result');
-for (const r of rows) console.log(`${r.label} | ${r.viewport} | ${r.theme} | ${r.problems.length ? r.problems.join('; ') : 'ok'} ${r.file ? '-> ' + path.relative(process.cwd(), r.file) : ''}`);
+for (const r of rows) console.log(`${r.label} | ${r.viewport} | ${r.theme} | ${r.problems.length ? r.problems.join('; ') : 'ok'}${r.warnings.length ? ' [warn: ' + r.warnings.join('; ') + ']' : ''} ${r.file ? '-> ' + path.relative(process.cwd(), r.file) : ''}`);
 const hard = rows.filter((r) => r.problems.some((p) => !p.startsWith('horizontal overflow')));
-console.log(`\n${rows.length} captures, ${hard.length} with errors, ${rows.filter((r) => r.problems.includes('horizontal overflow')).length} with horizontal overflow`);
+console.log(`\n${rows.length} captures, ${hard.length} with errors, ${rows.filter((r) => r.problems.includes('horizontal overflow')).length} with horizontal overflow, ${rows.filter((r) => r.warnings.length).length} with warnings (small text / small tap targets)`);
 process.exit(hard.length ? 1 : 0);
