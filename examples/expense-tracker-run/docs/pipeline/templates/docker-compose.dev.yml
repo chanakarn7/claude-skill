@@ -1,0 +1,22 @@
+# Dev/test-only PostgreSQL for autopilot runs.
+# Fixed template — agents must NOT edit this file. Production compose is a separate file (docs/DEPLOY.md).
+# DATABASE_URL=postgresql://app:app_dev_password@127.0.0.1:5433/app_dev
+# Test DB: same URL with ?schema=test (Prisma schema param), so tests never touch dev data.
+services:
+  db:
+    image: postgres:16-alpine
+    ports:
+      - "127.0.0.1:5433:5432"
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app_dev_password
+      POSTGRES_DB: app_dev
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d app_dev"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+volumes:
+  pgdata:

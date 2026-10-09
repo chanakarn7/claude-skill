@@ -1,0 +1,28 @@
+# Review — Gate 1 (round 1)
+Verdict: BLOCK
+Owner to fix: ba-agent
+
+Scope: `docs/IDEA.md` (15 lines, predates the intake template: no Tech stack, server, เกณฑ์ผ่าน, locked-decisions or ถ้าไม่แน่ใจ sections, so those checks were judged against what the idea contains), `docs/PRD.md` (265 lines), `docs/DECISIONS.md` (17 lines), `docs/STACK.md`. Not program mode, not change mode. This is a fresh review and replaces any older REVIEW_G1.md.
+
+## BLOCK
+1. [B1] A story example has the wrong weekday abbreviation, which a test would copy. US-07 gives the day-group heading example "อ. 7 ต.ค. 2569". 7 Oct 2026 is a Wednesday, so the Thai abbreviation is "พ." (อ. is Tuesday). — evidence: `docs/PRD.md:100` quotes "(เช่น "อ. 7 ต.ค. 2569")"; `date -d 2026-10-07 +%A` → Wednesday. — fix: change the example to "พ. 7 ต.ค. 2569", or use a verified date. Also state that the weekday comes from the th-TH locale of the entry's calendar date.
+2. [B2] A US-11 criterion allows two different behaviors, so it cannot give one deterministic test. For a month with no expenses it says "ไม่แสดงส่วนนี้ (หรือแสดง "ยังไม่มีรายจ่ายในเดือนนี้")". — evidence: `docs/PRD.md:120` — fix: choose one, for example "section hidden" or "section shown with the text 'ยังไม่มีรายจ่ายในเดือนนี้'". Keep US-10, §6 and §7c consistent with the choice.
+
+## NOTE
+1. [N1] The PRD has no `## Intake check` section, and no separate Constraints section. `docs/pipeline/autopilot.md:165` tells the human to start reading Gate 1 at `## Intake check`. Given the idea predates the template this is not a BLOCK. In substance §7b lists the missing look-and-feel items, §1 has the `Prototype:` line (`docs/PRD.md:46`), and §7 "Tech constraint" (`docs/PRD.md:224`) records the stack. An optional one-line-per-section Intake check (Requirement given; Look & feel given, thin; stack/server/acceptance/locked decisions missing or assumed, see DECISIONS) would help the human.
+2. [N2] US-06 says month navigation is unlimited ("ไม่จำกัดการเลื่อน", `docs/PRD.md:96`), but §5 accepts dates only from 2000-01-01 to 2099-12-31 (`docs/PRD.md:172`). Behavior of ◀/▶ at the edges, and of a date outside the range in US-02, is unspecified. The only related message is "กรุณาเลือกวันที่" for "ไม่ถูกต้อง" (`docs/PRD.md:70`), and it is unclear whether an out-of-range date counts as invalid. Suggest stating that an out-of-range date uses that message.
+3. [N3] US-02 does not say which message wins when several amount rules fail at once, for example "0.001" (more than 2 decimals and below ฿0.01). Only one message per field is implied (`docs/PRD.md:66-68`). Suggest giving the order of precedence.
+4. [N4] US-05 "รายการล่าสุด" on home (`docs/PRD.md:89`) does not say whether "latest" means by entry date or by createdAt. US-07 defines date-desc then createdAt-desc (`docs/PRD.md:99`). Suggest saying the home list uses the same ordering.
+5. [N5] US-11 rounds the percentages to whole numbers (`docs/PRD.md:119`) with no rounding mode, and the rows may not sum to 100. Suggest naming the mode (for example half-up) and saying the sum is not forced to 100.
+6. [N6] For a month with entries but no expenses, or an empty month on the home page, the home layout is only partly specified. US-10 covers the first-ever empty state on home and the empty month on the list page only (`docs/PRD.md:115-116`). §6 says the totals show ฿0.00 (`docs/PRD.md:200`). Low risk.
+7. [N7] Small items beyond the idea are logged in DECISIONS and are acceptable. US-11 (a simple bar list) is logged and the idea only excludes "complex" charts. The theme toggle, multi-tab sync, corrupt-storage handling (US-12) and the demo-data path are logged (`docs/DECISIONS.md:5-16`). The human may want to look at US-11 and the theme toggle, since the idea did not ask for either.
+8. [N8] PRD Open questions Q2-Q4 (carry-over, fixed categories, no export) are decided in DECISIONS and also asked, which is consistent. The idea has no `ถ้าไม่แน่ใจ` section, so no stop-and-ask topic (money, permissions, personal data) was silently decided. Privacy of unauthenticated local data is stated in §2 and §7.
+
+## Checked
+1. Coverage: ok. Every bullet in the idea maps to a story: add with 5 fields → US-01/02; edit/delete → US-03/04; home totals for the selected month → US-05/06; month history and category filter → US-07/08; local storage, no login or server → US-09 and §1; Thai → §7 Localization. The "ไม่ต้องมี" items are in §1 Non-goals.
+2. No invention: ok, with notes N7. Extras (US-11, US-12, theme, multi-tab) are traceable to logged DECISIONS.
+3. Acceptance: see B1, B2 and N2-N5. The idea has no เกณฑ์ผ่าน section, so the PRD's own criteria were checked. Every story has Given/When/Then or testable statements. Arithmetic verified: 20,000 − 7,500.50 = 12,499.50; 9,999,999,999 satang = ฿99,999,999.99; 0.1 + 0.2 = ฿0.30; 2569 BE = 2026 CE; 9 expense + 5 income categories match DECISIONS.
+4. Locked and constrained: ok / n/a. The idea has no locked, forbidden, stack or server sections. The PRD's client-only Vite + TypeScript + localStorage matches `docs/STACK.md` line 3 ("A client-only app ... stays on Vite + TypeScript + localStorage/IndexedDB") and is logged in DECISIONS. No server is stated, so no resource conflict. See N1.
+5. Asked-to-stop topics: ok. The idea has none; see N8.
+6. Intake check: see N1. The `Prototype:` line (`docs/PRD.md:46`) and the Look & feel section (§7b, quoting the idea's "ให้ AI เสนอ 3 แบบ" as the only input, with gaps in Q1) both exist.
+7. Internal consistency: ok. `grep` for duplicate story ids found none (US-01 to US-12). The TOC line ranges match the `grep -n '^#'` headings (20, 48, 55, 129, 164, 196, 217, 227, 246, 252, 259). No placeholder sections.

@@ -1,0 +1,650 @@
+[
+  {
+    "route": "?s=home#home",
+    "label": "home",
+    "viewport": "desktop",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/home-desktop-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=home-negative&month=2026-09#home",
+    "label": "home-negative",
+    "viewport": "desktop",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/home-negative-desktop-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=home-income-only&month=2026-08#home",
+    "label": "home-income-only",
+    "viewport": "desktop",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/home-income-only-desktop-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=home-empty-month&month=2026-11#home",
+    "label": "home-empty-month",
+    "viewport": "desktop",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/home-empty-month-desktop-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=home-empty-app&data=empty#home",
+    "label": "home-empty-app",
+    "viewport": "desktop",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/home-empty-app-desktop-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=home-loading&mode=loading#home",
+    "label": "home-loading",
+    "viewport": "desktop",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/home-loading-desktop-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=home-error&mode=error#home",
+    "label": "home-error",
+    "viewport": "desktop",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/home-error-desktop-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=list#list",
+    "label": "list",
+    "viewport": "desktop",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/list-desktop-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=list-filtered&cat=food#list",
+    "label": "list-filtered",
+    "viewport": "desktop",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/list-filtered-desktop-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=list-filter-empty&cat=education#list",
+    "label": "list-filter-empty",
+    "viewport": "desktop",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/list-filter-empty-desktop-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=list-empty-month&month=2026-11#list",
+    "label": "list-empty-month",
+    "viewport": "desktop",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/list-empty-month-desktop-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=entry-form&fill=1#entry-form",
+    "label": "entry-form",
+    "viewport": "desktop",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/entry-form-desktop-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=entry-form-empty#entry-form",
+    "label": "entry-form-empty",
+    "viewport": "desktop",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/entry-form-empty-desktop-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=entry-form-errors&errors=1#entry-form",
+    "label": "entry-form-errors",
+    "viewport": "desktop",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/entry-form-errors-desktop-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=entry-form-edit&edit=d4#entry-form",
+    "label": "entry-form-edit",
+    "viewport": "desktop",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/entry-form-edit-desktop-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=delete-confirm#delete-confirm",
+    "label": "delete-confirm",
+    "viewport": "desktop",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/delete-confirm-desktop-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=storage-alerts#storage-alerts",
+    "label": "storage-alerts",
+    "viewport": "desktop",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/storage-alerts-desktop-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=storage-alerts-corrupt&storage=corrupt#home",
+    "label": "storage-alerts-corrupt",
+    "viewport": "desktop",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/storage-alerts-corrupt-desktop-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=home#home",
+    "label": "home",
+    "viewport": "mobile",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/home-mobile-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=home-negative&month=2026-09#home",
+    "label": "home-negative",
+    "viewport": "mobile",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/home-negative-mobile-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=home-income-only&month=2026-08#home",
+    "label": "home-income-only",
+    "viewport": "mobile",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/home-income-only-mobile-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=home-empty-month&month=2026-11#home",
+    "label": "home-empty-month",
+    "viewport": "mobile",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/home-empty-month-mobile-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=home-empty-app&data=empty#home",
+    "label": "home-empty-app",
+    "viewport": "mobile",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/home-empty-app-mobile-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=home-loading&mode=loading#home",
+    "label": "home-loading",
+    "viewport": "mobile",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/home-loading-mobile-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=home-error&mode=error#home",
+    "label": "home-error",
+    "viewport": "mobile",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/home-error-mobile-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=list#list",
+    "label": "list",
+    "viewport": "mobile",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/list-mobile-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=list-filtered&cat=food#list",
+    "label": "list-filtered",
+    "viewport": "mobile",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/list-filtered-mobile-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=list-filter-empty&cat=education#list",
+    "label": "list-filter-empty",
+    "viewport": "mobile",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/list-filter-empty-mobile-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=list-empty-month&month=2026-11#list",
+    "label": "list-empty-month",
+    "viewport": "mobile",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/list-empty-month-mobile-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=entry-form&fill=1#entry-form",
+    "label": "entry-form",
+    "viewport": "mobile",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/entry-form-mobile-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=entry-form-empty#entry-form",
+    "label": "entry-form-empty",
+    "viewport": "mobile",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/entry-form-empty-mobile-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=entry-form-errors&errors=1#entry-form",
+    "label": "entry-form-errors",
+    "viewport": "mobile",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/entry-form-errors-mobile-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=entry-form-edit&edit=d4#entry-form",
+    "label": "entry-form-edit",
+    "viewport": "mobile",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/entry-form-edit-mobile-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=delete-confirm#delete-confirm",
+    "label": "delete-confirm",
+    "viewport": "mobile",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/delete-confirm-mobile-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=storage-alerts#storage-alerts",
+    "label": "storage-alerts",
+    "viewport": "mobile",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/storage-alerts-mobile-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=storage-alerts-corrupt&storage=corrupt#home",
+    "label": "storage-alerts-corrupt",
+    "viewport": "mobile",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/storage-alerts-corrupt-mobile-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=home#home",
+    "label": "home",
+    "viewport": "desktop",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/home-desktop-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=home-negative&month=2026-09#home",
+    "label": "home-negative",
+    "viewport": "desktop",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/home-negative-desktop-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=home-income-only&month=2026-08#home",
+    "label": "home-income-only",
+    "viewport": "desktop",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/home-income-only-desktop-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=home-empty-month&month=2026-11#home",
+    "label": "home-empty-month",
+    "viewport": "desktop",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/home-empty-month-desktop-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=home-empty-app&data=empty#home",
+    "label": "home-empty-app",
+    "viewport": "desktop",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/home-empty-app-desktop-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=home-loading&mode=loading#home",
+    "label": "home-loading",
+    "viewport": "desktop",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/home-loading-desktop-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=home-error&mode=error#home",
+    "label": "home-error",
+    "viewport": "desktop",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/home-error-desktop-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=list#list",
+    "label": "list",
+    "viewport": "desktop",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/list-desktop-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=list-filtered&cat=food#list",
+    "label": "list-filtered",
+    "viewport": "desktop",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/list-filtered-desktop-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=list-filter-empty&cat=education#list",
+    "label": "list-filter-empty",
+    "viewport": "desktop",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/list-filter-empty-desktop-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=list-empty-month&month=2026-11#list",
+    "label": "list-empty-month",
+    "viewport": "desktop",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/list-empty-month-desktop-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=entry-form&fill=1#entry-form",
+    "label": "entry-form",
+    "viewport": "desktop",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/entry-form-desktop-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=entry-form-empty#entry-form",
+    "label": "entry-form-empty",
+    "viewport": "desktop",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/entry-form-empty-desktop-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=entry-form-errors&errors=1#entry-form",
+    "label": "entry-form-errors",
+    "viewport": "desktop",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/entry-form-errors-desktop-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=entry-form-edit&edit=d4#entry-form",
+    "label": "entry-form-edit",
+    "viewport": "desktop",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/entry-form-edit-desktop-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=delete-confirm#delete-confirm",
+    "label": "delete-confirm",
+    "viewport": "desktop",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/delete-confirm-desktop-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=storage-alerts#storage-alerts",
+    "label": "storage-alerts",
+    "viewport": "desktop",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/storage-alerts-desktop-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=storage-alerts-corrupt&storage=corrupt#home",
+    "label": "storage-alerts-corrupt",
+    "viewport": "desktop",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/storage-alerts-corrupt-desktop-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=home#home",
+    "label": "home",
+    "viewport": "mobile",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/home-mobile-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=home-negative&month=2026-09#home",
+    "label": "home-negative",
+    "viewport": "mobile",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/home-negative-mobile-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=home-income-only&month=2026-08#home",
+    "label": "home-income-only",
+    "viewport": "mobile",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/home-income-only-mobile-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=home-empty-month&month=2026-11#home",
+    "label": "home-empty-month",
+    "viewport": "mobile",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/home-empty-month-mobile-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=home-empty-app&data=empty#home",
+    "label": "home-empty-app",
+    "viewport": "mobile",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/home-empty-app-mobile-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=home-loading&mode=loading#home",
+    "label": "home-loading",
+    "viewport": "mobile",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/home-loading-mobile-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=home-error&mode=error#home",
+    "label": "home-error",
+    "viewport": "mobile",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/home-error-mobile-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=list#list",
+    "label": "list",
+    "viewport": "mobile",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/list-mobile-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=list-filtered&cat=food#list",
+    "label": "list-filtered",
+    "viewport": "mobile",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/list-filtered-mobile-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=list-filter-empty&cat=education#list",
+    "label": "list-filter-empty",
+    "viewport": "mobile",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/list-filter-empty-mobile-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=list-empty-month&month=2026-11#list",
+    "label": "list-empty-month",
+    "viewport": "mobile",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/list-empty-month-mobile-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=entry-form&fill=1#entry-form",
+    "label": "entry-form",
+    "viewport": "mobile",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/entry-form-mobile-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=entry-form-empty#entry-form",
+    "label": "entry-form-empty",
+    "viewport": "mobile",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/entry-form-empty-mobile-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=entry-form-errors&errors=1#entry-form",
+    "label": "entry-form-errors",
+    "viewport": "mobile",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/entry-form-errors-mobile-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=entry-form-edit&edit=d4#entry-form",
+    "label": "entry-form-edit",
+    "viewport": "mobile",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/entry-form-edit-mobile-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=delete-confirm#delete-confirm",
+    "label": "delete-confirm",
+    "viewport": "mobile",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/delete-confirm-mobile-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=storage-alerts#storage-alerts",
+    "label": "storage-alerts",
+    "viewport": "mobile",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/storage-alerts-mobile-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "?s=storage-alerts-corrupt&storage=corrupt#home",
+    "label": "storage-alerts-corrupt",
+    "viewport": "mobile",
+    "theme": "dark",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/storage-alerts-corrupt-mobile-dark.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  }
+]

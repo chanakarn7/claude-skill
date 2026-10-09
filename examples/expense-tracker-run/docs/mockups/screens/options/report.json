@@ -1,0 +1,20 @@
+[
+  {
+    "route": "",
+    "label": "options",
+    "viewport": "desktop",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/options/options-desktop-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  },
+  {
+    "route": "",
+    "label": "options",
+    "viewport": "mobile",
+    "theme": "light",
+    "file": "/home/user/claude-skill/test-projects/expense-tracker/docs/mockups/screens/options/options-mobile-light.png",
+    "problems": [],
+    "bodyFont": "Sarabun, \"Noto Sans Thai\", system-ui, sans-serif"
+  }
+]

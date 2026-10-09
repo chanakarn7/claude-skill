@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ทางเลือกดีไซน์ (Prototype)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600&family=Sarabun:wght@400&family=Kanit:wght@600&family=Noto+Sans+Thai:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* Design-gate comparison: key page 1 (home) once per direction in docs/DESIGN_OPTIONS.md. Colors per option are the values stated there;
+   a few neutral tints (card, border, muted, category hues for Night Market) are derived for this comparison only. */
+*{box-sizing:border-box}
+body{margin:0;background:#E9E6DF;color:#1C1B18;font:400 16px/1.6 "Sarabun","Noto Sans Thai",system-ui,sans-serif}
+h1,h2,h3,p,ul{margin:0}ul{padding:0;list-style:none}
+.page{max-width:1280px;margin:0 auto;padding:24px 16px 48px}
+.top{display:flex;flex-wrap:wrap;gap:8px 24px;align-items:baseline;justify-content:space-between;margin-bottom:8px}
+.top h1{font:600 24px/32px "Prompt",sans-serif}
+.top p{color:#4A463C;font-size:14px;line-height:22px}
+.banner{display:inline-block;background:#FFFFFF;border:1px solid #C9C2B0;border-radius:8px;padding:2px 10px;font-size:14px;margin-bottom:16px}
+.grid{display:grid;gap:24px;grid-template-columns:1fr}
+@media (min-width:900px){.grid{grid-template-columns:repeat(3,minmax(0,1fr));align-items:start}}
+.opt-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.opt-head h2{font:600 18px/26px "Prompt",sans-serif}
+.tag{font-size:14px;line-height:20px;padding:0 10px;border-radius:999px;background:#1C1B18;color:#FFFFFF}
+.desc{font-size:14px;line-height:22px;color:#4A463C;margin-bottom:12px;min-height:66px}
+
+/* ---- per-direction variables ---- */
+[data-direction="banknote"]{--bg:#FAF7F0;--card:#FFFFFF;--text:#1C1B18;--muted:#5F5A4E;--border:#E3DCCB;--primary:#1E5A43;--primary-fg:#FFFFFF;--accent:#F2B53A;--accent-fg:#1C1B18;--hero:#1E5A43;--hero-fg:#FFFFFF;--hero-muted:#CFE3D8;--income:#2E6B34;--radius:14px;--rowh:56px;--fd:"Prompt",sans-serif;--fb:"Sarabun",sans-serif}
+[data-direction="night"]{--bg:#15121F;--card:#1F1B2E;--text:#F4F1FA;--muted:#B7B0C9;--border:#322C47;--primary:#FF6B5B;--primary-fg:#15121F;--accent:#C6F432;--accent-fg:#15121F;--hero:#15121F;--hero-fg:#C6F432;--hero-muted:#B7B0C9;--income:#C6F432;--radius:20px;--rowh:64px;--fd:"Kanit",sans-serif;--fb:"Noto Sans Thai",sans-serif}
+[data-direction="ledger"]{--bg:#FFFFFF;--card:#FFFFFF;--text:#111827;--muted:#4B5563;--border:#E5E7EB;--primary:#1D3A8A;--primary-fg:#FFFFFF;--accent:#0B6E8F;--accent-fg:#FFFFFF;--hero:#FFFFFF;--hero-fg:#111827;--hero-muted:#4B5563;--income:#0B6E8F;--radius:6px;--rowh:44px;--fd:"Noto Sans Thai",sans-serif;--fb:"Noto Sans Thai",sans-serif}
+
+/* ---- phone frame ---- */
+.phone{background:var(--bg);color:var(--text);font-family:var(--fb);border-radius:28px;border:1px solid #B9B2A0;overflow:hidden;box-shadow:0 12px 32px -16px rgba(28,27,24,0.45);position:relative;padding-bottom:132px}
+.bar{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--border)}
+.bar .brand{font:600 17px/24px var(--fd);display:flex;align-items:center;gap:8px;flex:1}
+.seal{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--accent-fg);font:600 14px/1 var(--fd)}
+.chip-theme{font-size:14px;color:var(--muted)}
+.body{padding:16px;display:flex;flex-direction:column;gap:16px}
+.month{display:flex;align-items:center;justify-content:space-between;font:600 19px/28px var(--fd)}
+.month span.a{color:var(--muted);font-weight:400}
+.money{font-family:var(--fd);font-variant-numeric:tabular-nums;white-space:nowrap}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius)}
+.row{display:flex;align-items:center;gap:12px;min-height:var(--rowh);padding:6px 14px}
+.row+.row{border-top:1px solid var(--border)}
+.ico{width:34px;height:34px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:15px;flex:none}
+.grow{flex:1;min-width:0}
+.sub{font-size:14px;line-height:20px;color:var(--muted)}
+.lbl{font:500 16px/22px var(--fd)}
+.in{color:var(--income)}
+h3{font:600 17px/24px var(--fd);padding:12px 14px 4px}
+.bk{padding:8px 14px 12px;display:flex;flex-direction:column;gap:6px}
+.bk .t{display:flex;justify-content:space-between;font-size:15px;line-height:22px}
+.track{height:8px;border-radius:999px;background:var(--border);overflow:hidden}
+.fill{height:100%;border-radius:999px;background:var(--primary)}
+.nav{position:absolute;left:0;right:0;bottom:0;display:flex;border-top:1px solid var(--border);background:var(--bg);height:64px}
+.nav div{flex:1;display:flex;align-items:center;justify-content:center;font:500 14px/20px var(--fd);color:var(--muted)}
+.nav div.on{color:var(--primary)}
+.fabx{position:absolute;right:16px;bottom:76px;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:600 26px/1 var(--fd);box-shadow:0 6px 16px -4px rgba(0,0,0,0.4)}
+
+/* ---- Banknote: slab ---- */
+.bn .slab{position:relative;background:var(--hero);color:var(--hero-fg);border-radius:20px;padding:22px;min-height:150px;display:flex;flex-direction:column;justify-content:space-between}
+.bn .slab::before{content:"";position:absolute;inset:7px;border:1px solid #4A8268;border-radius:14px;pointer-events:none}
+.bn .slab .cap{font-size:14px;line-height:22px;color:var(--hero-muted)}
+.bn .slab .big{font:600 34px/42px var(--fd)}
+.bn .slab .seal{position:absolute;top:18px;right:18px;width:38px;height:38px;font-size:19px}
+.bn .fabx{background:var(--accent);color:var(--accent-fg);border:2px solid var(--primary)}
+/* ---- Night Market: neon big number, per-category hues ---- */
+.nm .hero{padding:8px 4px 4px}
+.nm .hero .cap{color:var(--hero-muted);font-size:14px}
+.nm .hero .big{font:600 46px/54px var(--fd);color:var(--hero-fg)}
+.nm .pills{display:flex;gap:8px;overflow:hidden}
+.nm .pill{border-radius:999px;padding:6px 14px;font:600 15px/22px var(--fd);white-space:nowrap}
+.nm .fill{border-radius:999px}
+.nm .ico{color:#15121F}
+.nm .fabx{background:var(--primary);color:var(--primary-fg)}
+.nm .phone{border-color:#322C47}
+/* ---- Plain Ledger: sticky totals strip, dense rows ---- */
+.pl .strip{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--border);background:var(--bg)}
+.pl .strip div{padding:10px 12px;border-right:1px solid var(--border)}
+.pl .strip div:last-child{border-right:0}
+.pl .strip .cap{font-size:14px;line-height:20px;color:var(--muted)}
+.pl .strip .v{font:600 17px/24px var(--fd)}
+.pl .body{gap:12px;padding:12px}
+.pl .row{padding:2px 10px}
+.pl .ico{width:26px;height:26px;font-size:12px;background:#E5E7EB}
+.pl .fabx{background:var(--primary);color:var(--primary-fg);border-radius:12px}
+.pl .btn{align-self:flex-start;background:var(--primary);color:var(--primary-fg);border-radius:6px;padding:6px 14px;font:600 15px/22px var(--fd)}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="top"><h1>ทางเลือกดีไซน์ 3 แบบ · หน้าแรก</h1><p>เลือกที่บรรทัด <code>Chosen:</code> ใน docs/DESIGN_OPTIONS.md · ตอนนี้เลือก Banknote</p></div>
+  <span class="banner">Prototype — mock data</span>
+  <div class="grid" id="grid"></div>
+</div>
+<script>
+'use strict';
+const D = [
+  { dir: 'banknote', cls: 'bn', name: 'Banknote (ธนบัตร)', chosen: true, desc: 'เขียวขวดบนกระดาษอุ่น ตราทองมาริโกลด์ การ์ดยอดคงเหลือแบบธนบัตร สงบและน่าเชื่อถือ' },
+  { dir: 'night', cls: 'nm', name: 'Night Market (ตลาดนัดกลางคืน)', desc: 'มืดเป็นหลัก สีนีออนแยกตามหมวด ตัวเลขยอดคงเหลือใหญ่สีเหลืองมะนาว สนุก เสียงดัง' },
+  { dir: 'ledger', cls: 'pl', name: 'Plain Ledger (สมุดบัญชีเรียบ)', desc: 'แถบสรุปสามช่องติดบนสุด แถวแน่นแบบใบแจ้งยอด สีกรมท่า เรียบและปลอดภัยที่สุด' }
+];
+const hues = ['#FF6B5B', '#C6F432', '#5BD1F2', '#A78BFA', '#FFB547'];
+const rows = [['อ', 'อาหาร', 'ข้าวมันไก่ + ชาเย็น', '−฿185.00', 0], ['ด', 'เดินทาง', 'BTS สายสุขุมวิท', '−฿42.00', 2], ['ช', 'ช้อปปิ้ง', 'รองเท้าวิ่ง', '−฿1,290.00', 3], ['ข', 'ขายของ', 'ขายของมือสอง', '+฿1,800.00', 1]];
+const bk = [['อาหาร', '฿3,065.00', '35%', 35], ['บิล/ค่าน้ำไฟ', '฿2,040.00', '24%', 24], ['ช้อปปิ้ง', '฿1,840.00', '21%', 21]];
+function rowHtml(d, r) {
+  const col = d.dir === 'night' ? `style="background:${hues[r[4]]}"` : '';
+  return `<div class="row"><span class="ico" ${col}>${r[0]}</span><div class="grow"><div class="lbl">${r[1]}</div><div class="sub">${r[2]}</div></div><span class="money ${r[3][0] === '+' ? 'in' : ''}">${r[3]}</span></div>`;
+}
+function bkHtml(d) {
+  return `<div class="card"><h3>รายจ่ายตามหมวด</h3>${bk.map((b, i) => `<div class="bk"><div class="t"><span>${b[0]}</span><span class="money">${b[1]} · ${b[2]}</span></div><div class="track"><div class="fill" style="width:${b[3] * 2}%;${d.dir === 'night' ? `background:${hues[i]}` : ''}"></div></div></div>`).join('')}</div>`;
+}
+function home(d) {
+  let hero, summary = '';
+  if (d.dir === 'banknote') {
+    hero = `<div class="slab"><div><div class="cap">ยอดคงเหลือ</div><div class="cap">ตุลาคม 2569</div></div><span class="seal">฿</span><div class="big money">฿25,163.70</div></div>`;
+    summary = `<div class="card"><div class="row"><span class="ico">↙</span><span class="grow">รวมรายรับ</span><span class="money in" style="font-size:19px">฿33,800.00</span></div><div class="row"><span class="ico">↗</span><span class="grow">รวมรายจ่าย</span><span class="money" style="font-size:19px">฿8,636.30</span></div></div>`;
+  } else if (d.dir === 'night') {
+    hero = `<div class="hero"><div class="cap">ยอดคงเหลือ · ตุลาคม 2569</div><div class="big money">฿25,163.70</div></div><div class="pills"><span class="pill" style="background:var(--accent);color:var(--accent-fg)">รับ ฿33,800.00</span><span class="pill" style="background:var(--primary);color:var(--primary-fg)">จ่าย ฿8,636.30</span></div>`;
+  } else {
+    hero = `<div class="btn">+ เพิ่มรายการ</div>`;
+  }
+  const strip = d.dir === 'ledger' ? `<div class="strip"><div><div class="cap">รายรับ</div><div class="v money in">33,800.00</div></div><div><div class="cap">รายจ่าย</div><div class="v money">8,636.30</div></div><div><div class="cap">คงเหลือ</div><div class="v money">25,163.70</div></div></div>` : '';
+  const fab = d.dir === 'ledger' ? '' : `<div class="fabx">+</div>`;
+  return `<section class="${d.cls}" data-direction="${d.dir}" aria-label="${d.name}">
+    <div class="opt-head"><h2>${d.name}</h2>${d.chosen ? '<span class="tag">เลือกอยู่</span>' : ''}</div><p class="desc">${d.desc}</p>
+    <div class="phone"><div class="bar"><span class="brand"><span class="seal">฿</span>รายรับรายจ่าย</span><span class="chip-theme">☼ ☾</span></div>${strip}
+      <div class="body"><div class="month"><span class="a">‹</span><span>ตุลาคม 2569</span><span class="a">›</span></div>${hero}${summary}${bkHtml(d)}
+      <div class="card"><h3>รายการล่าสุด</h3>${rows.map((r) => rowHtml(d, r)).join('')}</div></div>
+      ${fab}<div class="nav"><div class="on">หน้าแรก</div><div>รายการ</div></div></div></section>`;
+}
+document.getElementById('grid').innerHTML = D.map(home).join('');
+</script>
+</body>
+</html>

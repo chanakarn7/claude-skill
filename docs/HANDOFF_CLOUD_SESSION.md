@@ -36,7 +36,7 @@ git log --oneline -8                        # ต้องเห็น e567d01 (
 
 ## ผลทดสอบ (โปรเจกต์ทดลอง expense-tracker แอป client-only)
 
-โฟลเดอร์ `test-projects/` ถูก ignore และอยู่แค่ใน container ของ session นี้ **ไม่ตามมา Mac** (ถ้าอยากเก็บเป็นตัวอย่าง ต้องคัดลอกเข้า repo ก่อน container ถูกเก็บ)
+โฟลเดอร์ `test-projects/` ถูก ignore (ไม่ตามมา Mac) แต่สแนปช็อตของ run นี้เก็บไว้ครบที่ **`examples/expense-tracker-run/`** (PRD, blueprint, contract, design, prototype พร้อม screenshot 72 ใบ, รายงาน reviewer, `history/` ผลรอบก่อนไว้เทียบ) พร้อมขั้นตอนทดสอบต่อใน `examples/expense-tracker-run/README.md` — ใช้เป็นจุดเริ่มทดสอบรอบส่งกลับของ reviewer และขั้น dev/QA ได้เลยโดยไม่ต้องรัน BA → proto ใหม่
 
 | ขั้น | ผล | ใช้ |
 |---|---|---|
