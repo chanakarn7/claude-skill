@@ -92,7 +92,7 @@ for (const scheme of schemes) {
           // Layout audit (no LLM): the things a reviewer used to catch only by looking at the image.
           const audit = await page.evaluate((mobile) => {
             const CAP = 8;
-            const vis = (el) => { const s = getComputedStyle(el); if (s.display === 'none' || s.visibility === 'hidden' || parseFloat(s.opacity) === 0) return false; const r = el.getBoundingClientRect(); return r.width > 1 && r.height > 1; };
+            const vis = (el) => { const s = getComputedStyle(el); if (s.display === 'none' || s.visibility === 'hidden' || parseFloat(s.opacity) === 0) return false; const r = el.getBoundingClientRect(); if (r.bottom <= 0 || r.right <= 0) return false; /* off-screen, e.g. a skip link until focused */ return r.width > 1 && r.height > 1; };
             const name = (el) => { const t = (el.innerText || el.value || el.getAttribute('aria-label') || '').trim().replace(/\s+/g, ' ').slice(0, 24); const c = typeof el.className === 'string' && el.className.trim() ? '.' + el.className.trim().split(/\s+/)[0] : ''; return `<${el.tagName.toLowerCase()}${el.id ? '#' + el.id : ''}${c}>${t ? ` "${t}"` : ''}`; };
             const ownText = (el) => [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim());
             const control = (el) => /^(BUTTON|A|INPUT|SELECT|TEXTAREA|IMG|SVG)$/i.test(el.tagName) || el.getAttribute('role') === 'button';
@@ -101,7 +101,18 @@ for (const scheme of schemes) {
               if (ownText(el) && !control(el)) {
                 const rg = document.createRange(); let l = Infinity, t = Infinity, r = -Infinity, b = -Infinity;
                 for (const n of el.childNodes) if (n.nodeType === 3 && n.textContent.trim()) { rg.selectNodeContents(n); for (const q of rg.getClientRects()) { if (q.width < 1 || q.height < 1) continue; l = Math.min(l, q.left); t = Math.min(t, q.top); r = Math.max(r, q.right); b = Math.max(b, q.bottom); } }
-                if (l < Infinity) return { l, t, r, b };
+                if (l < Infinity) {   // text hidden by overflow (ellipsis, clipped) is not visible: clip to every overflow-clipping ancestor and the element itself
+                  for (let e = el; e && e !== document.documentElement; e = e.parentElement) {
+                    const cs = getComputedStyle(e);
+                    if (e !== el && cs.overflowX === 'visible' && cs.overflowY === 'visible') continue;
+                    if (e === el && cs.overflowX === 'visible' && cs.overflowY === 'visible') continue;
+                    const q = e.getBoundingClientRect();
+                    if (cs.overflowX !== 'visible') { l = Math.max(l, q.left); r = Math.min(r, q.right); }
+                    if (cs.overflowY !== 'visible') { t = Math.max(t, q.top); b = Math.min(b, q.bottom); }
+                  }
+                  if (r > l && b > t) return { l, t, r, b };
+                  return { l: 0, t: 0, r: 0, b: 0 };
+                }
               }
               const q = el.getBoundingClientRect(); return { l: q.left, t: q.top, r: q.right, b: q.bottom };
             };

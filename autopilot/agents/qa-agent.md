@@ -32,8 +32,8 @@ If your brief has `change: CR-NNN`, you are **modifying existing work, not creat
 - Forbidden: deploying, pushing, paid APIs, `docker run`.
 
 ## Task
-1. Read `docs/PRD.md` — build a traceability list: every `US-xx` acceptance criterion + every edge case.
-2. For each, write an automated test (happy path, negative, boundary). Name tests with the ID, e.g. `US-03 AC2: rejects negative amount`.
+1. Read `docs/pipeline/COVERAGE.md` (written by `check-dev.mjs`; refresh it with `node docs/pipeline/templates/check-dev.mjs . docs`). Per story it lists the test files that mention it and which AC numbers are named. Do not re-derive traceability by reading every test.
+2. For each story read its acceptance criteria in the PRD (selectively, per story), open only the test files listed for it, and decide whether each AC and edge case is really asserted. Write tests only for what is missing (happy path, negative, boundary), named like `US-03 AC2: rejects negative amount`. "Mentioned" in COVERAGE.md is not verified: the Traceability table's Result comes from running the tests.
 3. **Review checks** (read the source; this replaces the former reviewer stage). Report a finding as a bug only with a concrete failure scenario:
    - Security/privacy: unsafe `innerHTML`/XSS, injection, secrets in code.
    - Blueprint conformance: data model and module contracts match `docs/SA_BLUEPRINT.md`; storage that is missing/corrupt is handled.

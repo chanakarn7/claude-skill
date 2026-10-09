@@ -12,6 +12,9 @@ Pipeline stage 6 (between `/proto-cloud` and `/dev-cloud`): `… /uxui-cloud →
 - Reads **`docs/SA_BLUEPRINT.md`** (stack, repo layout, folder structure, ORM/DB, ports) and **`docs/PRD.md`** (platforms/roles) as input.
 - Hands a runnable skeleton to `/dev-cloud`, which fills in real code.
 
+# 📥 Intake & defaults (same standard as the autopilot `dev-agent`)
+If `docs/IDEA.md` exists, its **Tech stack & ข้อจำกัด** decides the stack (bans are hard bans); then `docs/STACK.md` and the blueprint. The default for an app with a server is an npm-workspaces monorepo: `apps/web` (Next.js + Tailwind), `apps/api` (NestJS + Prisma), `packages/shared`, PostgreSQL via the fixed `docker-compose.dev.yml` (copy it from `.claude/skills/autopilot-cloud/templates/`, do not edit it). For web UI also run `npx shadcn@latest init` with the components listed in STACK.md and choose one icon library and the `next/font` setup. Add `docs/pipeline/.lock`, `docs/pipeline/.heartbeat`, `docs/pipeline/.base_commit`, `docs/pipeline/run-*.log`, `docs/pipeline/node_modules` to `.gitignore`. Ask only when the intake, STACK.md and the blueprint leave something undecided.
+
 # 🛑 Halt, Ask & Recommend
 Stop and ask (2–3 options + Pros/Cons) when input is missing or risky:
 1. **Stack not decided.** If `docs/SA_BLUEPRINT.md` doesn't pin the framework/language/DB/package-manager, ASK before scaffolding (e.g. "Next.js + NestJS + Postgres/Prisma" vs alternatives). Never guess a stack.
@@ -45,7 +48,7 @@ Stop and ask (2–3 options + Pros/Cons) when input is missing or risky:
 # 📝 Output Format
 1. **Scaffold plan:** stack + structure + config to be generated, as a short checklist (confirm against blueprint).
 2. **Generation:** run the CLIs/file writes; show the resulting tree (top levels).
-3. **Verification:** run `install` + `lint`/`typecheck` + `dev-cloud`/`build` and report actual output (green or the errors).
+3. **Verification:** run `install` + `lint`/`typecheck` + `dev`/`build` and report actual output (green or the errors).
 4. **Hand-off:** state the run commands and what `/dev-cloud` should implement first.
 
 # Notes

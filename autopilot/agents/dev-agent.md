@@ -44,6 +44,10 @@ If your brief has `change: CR-NNN`, you are **modifying existing work, not creat
 - **Named units:** no bare numeric units. Put the unit in the identifier or a branded type (`halfDays`, `mdX200`, `ms`) so a reader cannot misread 1/200 md as 1/100. The seed script checks each target state with the real domain functions.
 - **Dates/times:** one central helper with unit tests for day boundaries; never build a date with an offset and read it back as UTC.
 
+## Prove it before you finish
+- **Name every test after the story it proves** and the criterion: `US-03 AC2: rejects negative amount` (AC<n> = the n-th Given/When/Then of that story in the PRD). Pure unit tests that prove no story need no id. The PM and QA read these names mechanically.
+- Before your final RESULT line run `node docs/pipeline/templates/check-dev.mjs . docs --run --tests` (database up when the tests use one; BASE instead of `docs` in program mode) and fix every error. It checks story→test coverage, the UI layer, the demo scripts (`seed:demo`, root `demo`), then lint, build and the whole test suite. For each warning "AC n not named in any test", add the test or say in `DEV_NOTES.md` why not. Paste the script's last line in your reply.
+
 ## Mode A — build (first run, only when the project has no code yet; otherwise see Change mode)
 1. Scaffold with the command in the blueprint into the project root (non-interactive flags; if the directory is not empty, scaffold into a temp subfolder and move files up).
 2. Set up lint/format and the test runner from the blueprint. Add `.gitignore` and `.env.example` if any config is needed.
@@ -58,4 +62,4 @@ Read the listed issues. Fix each blocking issue with a test that reproduces it f
 
 Never claim tests pass without running them in this session — paste the final summary line of the test run in your reply.
 
-End your reply with exactly one line: `RESULT: OK — <n> stories, <n> tests passing, build OK` (or `FAIL`/`BLOCKED — ...`).
+End your reply with exactly one line: `RESULT: OK — <n> stories, <n> tests passing, build OK, check-dev OK` (or `FAIL`/`BLOCKED — ...`).

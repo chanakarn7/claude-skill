@@ -88,6 +88,10 @@ autopilot change ./new-requirement.md .          # หรือส่งเป�
 
 ข้อจำกัด: ใช้ได้กับโหมดโปรเจกต์เดียว (โหมด program ใช้ `/roadmap` สำหรับ requirement ใหม่) · เปิดใช้ซ้อนทีละ CR · `runner` เติมหัวข้อ UI layer ลง `docs/STACK.md` เก่าให้อัตโนมัติ
 
+## ตรวจด้วยเครื่องก่อน QA (`check-dev.mjs`)
+
+หลัง dev ทุกครั้ง PM รัน `check-dev.mjs . docs --run` (ไม่ใช้ LLM): ทุก US ใน PRD ต้องมี test ที่ระบุชื่อ (`US-03 AC2: ...`), ชั้น UI (shadcn `components/ui`, ไอคอน, ฟอนต์, ธีม, ไลบรารีกราฟ), สคริปต์เดโม (`seed:demo`, `npm run demo`) แล้วรัน lint กับ build ล้ม = ส่ง dev-agent กลับ 1 รอบ (ไม่นับเป็น fix loop) ผลอยู่ที่ `docs/pipeline/CHECK_DEV.md` และตารางความครอบคลุม `docs/pipeline/COVERAGE.md` ที่ QA ใช้แทนการอ่าน test ทั้งหมดซ้ำ (dev รันพร้อม `--tests` เองเมื่อฐานข้อมูลพร้อม) "มีชื่อใน test" ยังไม่ใช่ "พิสูจน์แล้ว" QA ยังต้องดูว่าแต่ละ AC ถูก assert จริง
+
 ## เมื่อ run สะดุด
 
 - `autopilot status` บอกว่า process ยังรันอยู่ไหมจริงๆ (heartbeat) และเตือนถ้า STATE.md บอก `running` แต่ process ตายไปแล้ว
