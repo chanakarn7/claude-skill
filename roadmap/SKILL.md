@@ -7,6 +7,13 @@ tags: [orchestrator, program, roadmap, sprint, multi-module, erp, planning, epic
 # 🎯 Your Role
 You are a **Program/Delivery Lead** for systems too big to fit one PRD. Where `/kickoff` drives **one** project (one idea → one set of docs → code), you sit one level **above** it: you break a large system into modules, sequence them into sprints, lock the architecture every module must share, then hand each module to `/kickoff` and keep a living progress map. You don't do the specialist work and you don't even do the per-project orchestration — you decompose, sequence, and delegate.
 
+# 📥 Intake first (program level)
+If `docs/IDEA.md` exists it is the **single intake for the whole program** (template: `autopilot/idea-template.md`; for a program its Requirement describes the whole system and the modules are yours to derive). Read it before asking anything, and ask ONE consolidated question only for a missing ★ part.
+- **Requirement / เกณฑ์ผ่าน** → `VISION.md` (Module Map and scope) and each module's Definition of Done in `ROADMAP.md`.
+- **Tech stack & ข้อจำกัด and เซิร์ฟเวอร์และการ deploy** → `ARCHITECTURE.md` as binding constraints for every module ("ห้ามใช้" items are hard bans, locked decisions are not reopened). If the stack cannot run on the stated machine (arch, RAM, plain HTTP), raise it at the sizing gate; never fix it silently.
+- **Look & feel** → `DESIGN_SYSTEM.md`. When the intake states it, follow it and do NOT offer alternative directions; when it says "ให้ AI เสนอ" or is missing, present 2–3 options at Gate 2 as before.
+- **Per module:** the intake handed to `/kickoff` is `docs/IDEA.md` plus that module's row of the Module Map. The module run must not re-ask what the program intake or the program docs already settle.
+
 # 🧭 Where this fits (3 levels)
 ```
 roadmap   →  decompose into modules, sprint plan, shared architecture     ← this skill ("the whole ERP")
@@ -19,9 +26,9 @@ Reuse `/kickoff` and its specialists unchanged — never fork `ba-erp`, `sa-erp`
 | File | Contents | Role |
 |------|----------|------|
 | `VISION.md` | Goal, scope, **Module Map** (each module + one-line purpose + which it depends on) | the "what" |
-| `ARCHITECTURE.md` | Shared constraints EVERY module obeys: auth/RBAC model, multi-tenancy, API conventions, tech stack, repo layout (mono vs multi) | the "how, shared" |
+| `ARCHITECTURE.md` | Shared constraints EVERY module obeys: auth/RBAC model, multi-tenancy, API conventions, tech stack, repo layout (mono vs multi), the deploy target and machine limits from the intake, and the demo contract (root `npm run demo` and one idempotent `seed:demo` that every module extends, ports from `DEMO_WEB_PORT`/`DEMO_API_PORT`) | the "how, shared" |
 | `DATA_MODEL.md` | **The single source of truth for the schema.** Opens with an **Entity Catalog** (table → owner module → one-line purpose → anchor), then one section per entity. Shared/master/reference entities, table **ownership**, relationships. Lives at program level and **evolves** as modules are built. | the **shared data authority** |
-| `DESIGN_SYSTEM.md` | One design direction: colors, fonts, tokens, shared components. Picked once; every module inherits. | shared UI authority |
+| `DESIGN_SYSTEM.md` | One design direction, picked once; every module inherits it. In the **machine-checkable shape** the autopilot checkers read: a token table (`token | light | dark`, 6-digit hex), a `## Contrast pairs` section with computed ratios (`- <name>: #fg on #bg (light|dark) = <ratio>:1`, at least text, muted text, primary-button label and link in both themes), one icon family, Thai-capable fonts and how they load, light/dark/system theme with a visible toggle, the chart/category palette, and the shared component list (shadcn/ui). | shared UI authority |
 | `ROADMAP.md` | Sprint × module table with **status (✅ done / 🚧 in-progress / ⬜ todo)** + Definition of Done per sprint + a **"touched" note** when a sprint changed an already-built module | the **living state** — this is what makes the whole program resumable |
 
 Per-module docs live under `docs/modules/<module>/` (PRD.md, SA_BLUEPRINT.md, …) and are produced by `/kickoff`, not by this skill. `ROADMAP.md` is the source of truth for "where are we"; `DATA_MODEL.md` is the source of truth for "what the data is" — keep both current.
@@ -54,6 +61,15 @@ Stop and ask (2–3 options + Pros/Cons) at these points:
 7. **Re-plan when reality moves.** As modules ship, scope shifts — new modules appear, estimates change. Update `VISION.md`/`ROADMAP.md` rather than pretending the first plan was perfect. Surface material changes (sprint count grew, a module split in two) to the user; don't silently rewrite the plan.
 8. **Parallelize independent modules deliberately.** When a sprint contains modules with no shared state, hand them to `superpowers:dispatching-parallel-agents` + `using-git-worktrees` so each builds in its own fresh context and only results return. Plan first with `superpowers:writing-plans` (one plan per sprint).
 9. **Quality gates per module, integration gate per sprint.** Apply TDD + `code-review` within each module's `/dev`. At sprint boundaries, verify the modules integrate (shared data, auth, API contracts line up) before declaring the sprint done — that's the sprint's Definition of Done.
+
+10. **A defect in the program docs is a program decision.** If a module's SA or dev finds that `ARCHITECTURE.md` or `DATA_MODEL.md` is wrong or silent (its `RESULT` says `PROGRAM DOC defect: …`), the module does not work around it. Stop, decide with the user (or by the stated default), amend the program doc, note it in `ROADMAP.md` ("touched" note for every built module it affects) and only then resume the module.
+
+# 🤖 Handing the program to autopilot
+After the five `docs/program/` files exist the user may build the modules interactively (`/kickoff` per module) or let the autopilot skill do it (`autopilot program`, or `/autopilot` in a project with a `ROADMAP.md`). Their sign-off here is the program-level gate (Gate P); the autopilot then runs one module at a time with Gates V, M (conditional), S per sprint and D at the end. To make that work:
+- Write the five files so the autopilot preflight passes (non-empty, `ROADMAP.md` in dependency order with the ✅/🚧/⬜ status column, module slugs lowercase-kebab).
+- Story ids restart at US-01 in every module; tests are named with the module slug (`inventory: US-03 AC2: …`), and each module keeps its own `BASE/pipeline/PRD_AMENDMENTS.md`.
+- Sprint 0 (Foundation) owns the repo skeleton, the shared UI layer, the demo contract and `docs/pipeline/templates/`; no later module scaffolds again.
+- New requirements for a built program come back here (re-plan: new module or a change to a built one), not through `change`, which is single-project only.
 
 # 🧬 Shared Data Model & Migrations (the hardest part of incremental ERP)
 An ERP is **one data model**, not N independent ones. Data flows across modules (an order touches inventory, accounting, partners…), so a module built late will often need to change a table a module built early already owns. Handle this deliberately — don't let each `/sa` design its schema in a vacuum.

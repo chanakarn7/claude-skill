@@ -44,8 +44,26 @@ At these points, STOP and ask the user (2–3 options + Pros/Cons each); do not 
 The user may open `/kickoff-cloud` with a detailed brief: requirements, look & feel, tech stack, and the server/hosting. Treat it as the **single intake**:
 1. Save it **verbatim** to `docs/IDEA.md` (never paraphrase), and tell each stage "intake is `docs/IDEA.md`" as a one-line pointer. The template with every field is `autopilot-cloud/idea-template.md` (`.claude/skills/autopilot-cloud/idea-template.md`); offer it only if the brief is thin.
 2. Check for gaps once: Requirement, เกณฑ์ผ่าน (acceptance), Look & feel, Tech stack & ข้อจำกัด, เซิร์ฟเวอร์และการ deploy. Ask ONE consolidated question for what is missing, never what the brief already answers.
-3. Its stack/server sections **override** the defaults (`/sa-cloud`, `/dev-cloud`, `/devops-cloud` must follow them; a conflict such as a stack that cannot run on the stated machine is raised to the user, not silently fixed). Its "locked decisions" are not re-opened. Look & feel given in the brief means Stage 3 does not offer options unless the user asks.
+3. The deploy target and machine limits for the devops stage come from its `เซิร์ฟเวอร์และการ deploy` section (defaults: Raspberry Pi first, then AWS; the stage prepares files and commands, the user runs any deploy). Its stack/server sections **override** the defaults (`/sa-cloud`, `/dev-cloud`, `/devops-cloud` must follow them; a conflict such as a stack that cannot run on the stated machine is raised to the user, not silently fixed). Its "locked decisions" are not re-opened. Look & feel given in the brief means Stage 3 does not offer options unless the user asks.
 4. `/ba-cloud` runs as the sharpening step: it interviews only the gaps and ends with an intake-check summary (given / assumed / missing) for the first human checkpoint.
+
+# 🔎 Machine checks after each stage (no LLM, same tools as the autopilot)
+Copy the scripts from `.claude/skills/autopilot-cloud/templates/` into `docs/pipeline/templates/` once. Run them after the stage and fix the errors before the human checkpoint; they are cheap and catch what a reviewer would otherwise bill tokens for.
+| After | Run | Proves |
+|-------|-----|--------|
+| `/sa-cloud` | `node docs/pipeline/templates/check-contract.mjs . docs` (+ `check-amendments.mjs . docs` once amendments exist) | contract parses, every story is served, `$ref`s resolve, amendment ids and tags agree |
+| `/uxui-cloud`, `/proto-cloud` | `node docs/pipeline/templates/check-design.mjs . docs` and `screenshot.mjs` (setup in its header) | contrast pairs, every story on a screen, `data-screen`, links, no off-palette colors, screenshots; overlap/clipping/tap-target audit |
+| `/dev-cloud` | `node docs/pipeline/templates/check-dev.mjs . docs --run --tests` | every story named by a test, UI layer (shadcn, icons, fonts, theme), demo scripts, lint, build, tests |
+| `/qa-cloud` | reads `docs/pipeline/COVERAGE.md` | traceability without re-reading every test |
+For a first checkpoint with real stakes (PRD, prototype) offer an **independent review**: dispatch the autopilot reviewer through the Agent tool with .claude/skills/autopilot-cloud/agents/`reviewer-agent.md` as its instructions (it costs roughly 100k tokens per gate; say so, and skip it when the user declines).
+PRD defects found downstream are never worked around: `/sa-cloud` (and the later stages) raise a PRD amendment in `docs/pipeline/PRD_AMENDMENTS.md`, `/ba-cloud` applies it in amend mode, and the next checkpoint shows it.
+
+# 🔁 Change requests on a project that is already built
+Do not restart the pipeline. (Using the autopilot instead: `autopilot-cloud change "<request>"`; `autopilot-cloud adopt` when the docs lag code changed by hand.) Interactively:
+1. Write the request to `docs/changes/CR-NNN.md` and tag the git state (`git tag pre-CR-NNN`).
+2. `/ba-cloud` analyses it (types: visual, redesign, requirement, stack-change, bug) and edits `docs/PRD.md` in place: new stories continue the numbering, edited ones are tagged `[CR-NNN]`, removed behavior is marked, nothing is silently deleted. List the stages to re-run (visual `3,4,5,6`; new behavior `2,3,4,5,6`; bug `5,6`) and **show the user the plan and a rough cost before running anything**.
+3. Re-run only those stages, updating the existing docs and code in place and keeping ids stable; `/dev-cloud` modifies, never rebuilds; `/qa-cloud` runs the full regression plus tests for the change (round 2 style: verify the previous bugs, review only the diff).
+4. Vague subjective requests ("make it prettier") are not narrowed by you: put the broad and the narrow reading to the user before planning.
 
 # 🧠 Operating Rules
 1. **One stage at a time.** Invoke the stage's skill, let it finish and write its canonical file, confirm the file exists, then move on. Report progress after each stage.

@@ -64,6 +64,8 @@ autopilot ตรวจเจอ `docs/program/ROADMAP.md` เองถึงจ�
 | **S** | ทุก sprint: ทุกโมดูลผ่าน QA + integration QA (`docs/program/SPRINT_<n>_QA.md`) | คน |
 | **D** | ทุก sprint เสร็จ → ก่อนเตรียมไฟล์ deploy | คน |
 
+ในแต่ละโมดูลใช้ตัวตรวจด้วยเครื่องชุดเดียวกับโหมดโปรเจกต์เดียว แต่ระบุโฟลเดอร์โมดูล (`BASE`): `check-contract` หลัง SA, `check-design` ก่อน Gate V (อ่าน `docs/program/DESIGN_SYSTEM.md` เป็นแหล่ง token ด้วย โมดูลจึงใส่แค่หน้าจอของตัวเอง), `check-dev` หลัง dev (นับเฉพาะ test ที่มี slug ของโมดูลใน path หรือชื่อ เพราะ story id เริ่มที่ US-01 ทุกโมดูล) และ PRD amendment แยกไฟล์ต่อโมดูล (`BASE/pipeline/PRD_AMENDMENTS.md`) reviewer ไม่รันอัตโนมัติต่อโมดูล (แพงพอๆ กับขั้นงาน) เรียกเฉพาะที่ Gate V และ Gate M
+
 ข้อจำกัด: โมดูลทำทีละตัว (ยังไม่มี parallel) · `ROADMAP.md` คือสถานะจริง (✅/🚧/⬜) และเป็นตัวที่ใช้ resume ข้าม session
 
 ## Change mode — ย้อนกลับไปแก้งานที่ทำแล้ว

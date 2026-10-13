@@ -5,6 +5,8 @@
 // Run:  node docs/pipeline/templates/check-design.mjs [projectRoot=.] [BASE=docs]
 //
 // Reads <BASE>/PRD.md, <BASE>/UXUI_DESIGN.md and (if present) <BASE>/mockups/index.html + <BASE>/mockups/screens/.
+// Program mode (BASE is not `docs` and docs/program/DESIGN_SYSTEM.md exists): the program design system is the token authority, so its palette and its
+//   `Contrast pairs` count together with the module's own; the module doc only has to add its screens (and any pairs it introduces).
 // Conventions it relies on (documented in designer-agent.md / proto-agent.md):
 //   UXUI_DESIGN.md  "## Contrast pairs"  lines:  - <name>: #fg on #bg (light|dark) = <ratio>:1 [large|ui]
 //   UXUI_DESIGN.md  "Screens" table (heading containing "Screens"): | screen-id | title | US-xx, US-yy | priority |
@@ -21,9 +23,11 @@ import path from 'node:path';
 const root = path.resolve(process.argv[2] || '.');
 const base = process.argv[3] || 'docs';
 const read = (p) => { const f = path.join(root, p); return fs.existsSync(f) ? fs.readFileSync(f, 'utf8') : null; };
-const design = read(`${base}/UXUI_DESIGN.md`);
+const moduleDesign = read(`${base}/UXUI_DESIGN.md`);
 const prd = read(`${base}/PRD.md`);
-if (!design) { console.error(`nothing to check: no ${base}/UXUI_DESIGN.md`); process.exit(2); }
+if (!moduleDesign) { console.error(`nothing to check: no ${base}/UXUI_DESIGN.md`); process.exit(2); }
+const programDs = base !== 'docs' ? read('docs/program/DESIGN_SYSTEM.md') : null;
+const design = programDs ? `${moduleDesign}\n\n${programDs}` : moduleDesign;   // tokens: module + program design system; screens table: module doc (it is first)
 
 const errors = [], warns = [];
 const hex6 = (h) => { h = h.replace('#', '').toLowerCase(); return h.length === 3 ? [...h].map((c) => c + c).join('') : h; };
@@ -32,11 +36,11 @@ const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p);
 
 // ---- palette and contrast
 const palette = new Set((design.match(/#[0-9a-fA-F]{6}\b|#[0-9a-fA-F]{3}\b/g) || []).map(hex6));
-const cm = design.match(/^#{1,4}\s*(?:\d+\.?\s*)?Contrast pairs[^\n]*\n([\s\S]*?)(?=^#{1,4}\s|(?![\s\S]))/im);
-if (!cm) errors.push('no "Contrast pairs" section in UXUI_DESIGN.md (list every text/background pair with its computed ratio)');
+const cms = [...design.matchAll(/^#{1,4}\s*(?:\d+\.?\s*)?Contrast pairs[^\n]*\n([\s\S]*?)(?=^#{1,4}\s|(?![\s\S]))/gim)];
+if (!cms.length) errors.push(`no "Contrast pairs" section in UXUI_DESIGN.md${programDs ? ' or docs/program/DESIGN_SYSTEM.md' : ''} (list every text/background pair with its computed ratio)`);
 else {
   let n = 0;
-  for (const m of cm[1].matchAll(/^[-*]\s*([^:\n]+):\s*(#[0-9a-fA-F]{3,6})\s+on\s+(#[0-9a-fA-F]{3,6})[^=\n]*=\s*([\d.]+)\s*:\s*1([^\n]*)/gim)) {
+  for (const cm of cms) for (const m of cm[1].matchAll(/^[-*]\s*([^:\n]+):\s*(#[0-9a-fA-F]{3,6})\s+on\s+(#[0-9a-fA-F]{3,6})[^=\n]*=\s*([\d.]+)\s*:\s*1([^\n]*)/gim)) {
     n++;
     const [, name, fg, bg, stated, rest] = m;
     const real = ratio(hex6(fg), hex6(bg));

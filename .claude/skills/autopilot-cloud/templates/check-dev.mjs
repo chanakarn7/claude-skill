@@ -9,6 +9,7 @@
 //
 // Conventions it relies on (documented in dev-agent.md / qa-agent.md):
 //   every test name or file mentions the story it proves:  "US-03 AC2: rejects negative amount"  (AC<n> = the n-th Given/When/Then of that story)
+//   program mode (BASE = docs/modules/<slug>): only tests whose path or text contains <slug> count, e.g. `inventory: US-03 AC2: ...`
 //   PRD stories start a line with  US-<n>  (heading, bullet or bold), their acceptance criteria use the word "Given"
 // Writes <root>/docs/pipeline/COVERAGE.md (story -> tests -> ACs) and <root>/docs/pipeline/CHECK_DEV.md (this report).
 // Errors (exit 1): a story no test mentions; lint/build/test failed; web UI without components/ui (unless a [DEVIATION] says why);
@@ -63,8 +64,11 @@ walk(root, (p) => {
   if (/\.(test|spec)\.[cm]?[jt]sx?$/.test(p) || /(^|\/)(__tests__|e2e|tests?)\//.test(r)) testFiles.push(p);
 });
 const covered = new Map();   // id -> { files:Set, acs:Set }
+// Program mode: every module numbers its stories from US-01, so only tests that belong to THIS module count: the module slug (the folder name under docs/modules/) must appear in the test's path or text.
+const modSlug = /^docs\/modules\/[^/]+/.test(base) ? base.split('/')[2].toLowerCase() : null;
 for (const f of testFiles) {
   const src = read(f) || '';
+  if (modSlug && !(rel(f).toLowerCase().includes(modSlug) || src.toLowerCase().includes(modSlug))) continue;
   for (const m of src.matchAll(/\bUS-(\d+)(?:[\s,:;.\-–]{0,3}AC\s?(\d+))?/g)) {
     const id = `US-${m[1].padStart(2, '0')}`; const alt = `US-${m[1]}`;
     const key = stories.has(id) ? id : stories.has(alt) ? alt : null;

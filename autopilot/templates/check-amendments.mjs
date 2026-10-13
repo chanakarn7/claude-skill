@@ -4,7 +4,7 @@
 //
 // Run:  node docs/pipeline/templates/check-amendments.mjs [projectRoot=.] [BASE=docs]
 //
-// Reads <BASE>/pipeline/PRD_AMENDMENTS.md (override: docs/pipeline/...), <BASE>/PRD.md, <BASE>/SA_BLUEPRINT.md, <BASE>/contracts/*.
+// Reads docs/pipeline/PRD_AMENDMENTS.md (single project) or <BASE>/pipeline/PRD_AMENDMENTS.md (program mode), <BASE>/PRD.md, <BASE>/SA_BLUEPRINT.md, <BASE>/contracts/*.
 //   error : an entry is still `open`
 //   error : an `applied` entry has no `[amend A<n>]` tag in the PRD
 //   error : a `rejected` entry is still tagged in the PRD, or still relied on by the blueprint/contract
@@ -23,7 +23,8 @@ const listDir = (p) => { const d = path.join(root, p); return fs.existsSync(d) ?
 const norm = (s) => s.replace(/\s+/g, ' ').trim();
 
 const prd = read(`${base}/PRD.md`);
-const am = read('docs/pipeline/PRD_AMENDMENTS.md') ?? read(`${base}/pipeline/PRD_AMENDMENTS.md`);
+// single project: docs/pipeline/PRD_AMENDMENTS.md; program mode (BASE is a module dir): the module's own <BASE>/pipeline/PRD_AMENDMENTS.md, so one module's entries are never checked against another module's PRD
+const am = base === 'docs' ? (read('docs/pipeline/PRD_AMENDMENTS.md') ?? read(`${base}/pipeline/PRD_AMENDMENTS.md`)) : (read(`${base}/pipeline/PRD_AMENDMENTS.md`));
 const downstream = [`${base}/SA_BLUEPRINT.md`, ...listDir(`${base}/contracts`)].map((p) => [p, read(p)]).filter(([, t]) => t);
 if (!prd) { console.error(`no ${base}/PRD.md`); process.exit(2); }
 

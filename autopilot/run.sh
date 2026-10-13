@@ -140,7 +140,9 @@ pilot() {
 open_change() { local c; c="$(state_get change)"; case "$c" in CR-[0-9]*) echo "$c" ;; esac; }
 
 case "$CMD" in
-  start)  mkdir -p "$PROJECT/docs"; cp "$IDEA" "$PROJECT/docs/IDEA.md"; pilot 'start docs/IDEA.md' ;;
+  start)  mkdir -p "$PROJECT/docs"; cp "$IDEA" "$PROJECT/docs/IDEA.md"
+          node "$ROOT/templates/check-intake.mjs" "$IDEA" || true   # advisory: shows which intake sections are given / delegated / missing before tokens are spent
+          pilot 'start docs/IDEA.md' ;;
   resume) pilot resume ;;
   program) pilot program ;;
 
