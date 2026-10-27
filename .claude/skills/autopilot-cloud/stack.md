@@ -23,6 +23,8 @@ docker-compose.dev.yml    dev/test PostgreSQL (copied from docs/pipeline/templat
   - `npx @nestjs/cli new apps/api --package-manager npm --skip-git --strict`
 
 ## UI layer (every web UI project — Next.js app or client-only Vite app)
+> **UI kit override:** when `docs/pipeline/kit.json` exists with status `resolved` or `discovered` (the intake's `UI kit:` line names a kit), this section does NOT apply: the kit owns the components, icons, fonts, theme toggle and charts, and its `requires` (for example Next 15 and Tailwind 3.4) override the versions below. Install it with `install-kit.mjs`; never add shadcn/ui next to it.
+
 - **Component library: shadcn/ui** (`npx shadcn@latest init`, then `add` button input select dialog sheet badge card table tabs dropdown-menu tooltip sonner). It supports both Next.js and Vite. Components live in `components/ui` (`apps/web/src/components/ui` in the monorepo; `src/components/ui` in a Vite app) and are used for EVERY button, input, select, dialog, menu, table and badge. Hand-written replacements are forbidden unless the blueprint records why in `docs/DECISIONS.md`.
 - **Icons:** lucide-react (or phosphor), one family only. No emoji as structural icons or status markers.
 - **Fonts:** the font named in the design doc must actually load; verify in the built page. Next.js: `next/font` (google or local). Vite: `@fontsource/<family>` packages imported in the entry file (local, no CDN), or a `<link>` in `index.html`. Thai UI needs a Thai-capable font (Noto Sans Thai, IBM Plex Sans Thai, Prompt, Sarabun).

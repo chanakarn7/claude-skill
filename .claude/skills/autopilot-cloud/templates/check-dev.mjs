@@ -14,12 +14,15 @@
 // Writes <root>/docs/pipeline/COVERAGE.md (story -> tests -> ACs) and <root>/docs/pipeline/CHECK_DEV.md (this report).
 // Errors (exit 1): a story no test mentions; lint/build/test failed; web UI without components/ui (unless a [DEVIATION] says why);
 //   server project without a `seed:demo` script and a root `demo` script; no test script at all.
+// UI kit mode (docs/pipeline/kit.json): instead of the shadcn checks, the kit must be installed (docs/kit.lock), its files unedited (hash per file), and screens must not use raw
+//   <button>/<input>/<select>/<textarea>/<table>/<dialog> where the kit has components (error from 5 occurrences unless a [DEVIATION] mentioning the kit is logged).
 // Warnings: AC numbers a story has but no test mentions; missing icon library / font loading / theme handling / chart library; no .env.example.
 // "Mentioned" is not "verified": the tests still have to pass and QA decides whether each AC is really asserted. Exit 2 = nothing to check.
 
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
+import crypto from 'node:crypto';
 
 const args = process.argv.slice(2);
 const flags = new Set(args.filter((a) => a.startsWith('--')));
@@ -104,8 +107,37 @@ const deviated = (word) => new RegExp(`\\[(VISUAL-)?DEVIATION\\][^\\n]*${word}`,
 const hasWebUi = hasDep(/^(next|react|react-dom|vite|vue|svelte)$/);
 const hasServer = hasDep(/^(@nestjs\/core|express|fastify|hono|koa|prisma|@prisma\/client)$/);
 
-// ---- UI layer
-if (hasWebUi) {
+// ---- UI kit mode (docs/pipeline/kit.json resolved|discovered): the kit replaces the shadcn/ui layer checks
+const kitManifest = (() => { try { return JSON.parse(read(path.join(root, 'docs/pipeline/kit.json')) || 'null'); } catch { return null; } })();
+const kitMode = !!kitManifest && ['resolved', 'discovered'].includes(kitManifest.status);
+if (kitMode) {
+  const lockText = read(path.join(root, 'docs/kit.lock'));
+  const kitDev = /\[(VISUAL-)?DEVIATION\][^\n]*\bkit\b/i.test(decisions);
+  if (!lockText) errors.push(`UI kit "${kitManifest.name}" is declared but not installed (no docs/kit.lock): run node docs/pipeline/templates/install-kit.mjs . --target ${kitManifest.target || '.'} --install`);
+  else {
+    const lock = JSON.parse(lockText);
+    const owned = new Set(Object.keys(lock.files || {}).map((f) => path.resolve(root, f)));
+    let edited = [], missing = [];
+    for (const [f, h] of Object.entries(lock.files || {})) {
+      const abs = path.join(root, f);
+      if (!fs.existsSync(abs)) { missing.push(f); continue; }
+      if (crypto.createHash('sha256').update(fs.readFileSync(abs)).digest('hex') !== h) edited.push(f);
+    }
+    if (missing.length) errors.push(`${missing.length} kit file(s) from docs/kit.lock are missing, e.g. ${missing.slice(0, 3).join(', ')}`);
+    if (edited.length) (kitDev ? warns : errors).push(`${edited.length} kit file(s) were edited after installation (${edited.slice(0, 4).join(', ')}${edited.length > 4 ? ', …' : ''})${kitDev ? ' - logged as [DEVIATION]' : '; do not edit the kit, or log "[dev][DEVIATION] kit file edited: <path> - <why>"'}`);
+    // screens must use kit components, not raw controls
+    const appDir = path.join(root, lock.target || '.', 'src');
+    const raw = [];
+    if (fs.existsSync(appDir)) walk(appDir, (f) => {
+      if (!/\.[jt]sx$/.test(f) || owned.has(path.resolve(f)) || /\.(test|spec)\./.test(f) || /(^|\/)(__tests__|test|tests|qa)\//.test(rel(f))) return;
+      const n = (read(f) || '').match(/<(button|input|select|textarea|table|dialog)\b/g);
+      if (n) raw.push([rel(f), n.length]);
+    });
+    const total = raw.reduce((a, [, n]) => a + n, 0);
+    if (total) (total >= 5 && !kitDev ? errors : warns).push(`${total} raw HTML control(s) (<button>, <input>, <select>, <textarea>, <table>, <dialog>) in ${raw.length} app file(s) where the kit has components, e.g. ${raw.sort((a, b) => b[1] - a[1]).slice(0, 3).map(([f, n]) => `${f} (${n})`).join(', ')}`);
+    notes.push(`UI kit ${kitManifest.name} @ ${(lock.source && lock.source.commit || '').slice(0, 8)}: ${Object.keys(lock.files || {}).length} installed file(s), ${edited.length} edited`);
+  }
+} else if (hasWebUi) {
   let uiFiles = 0; let src = '';
   walk(root, (p) => {
     const r = rel(p);

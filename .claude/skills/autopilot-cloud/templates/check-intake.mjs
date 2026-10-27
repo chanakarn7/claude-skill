@@ -21,6 +21,7 @@ const SECTIONS = [
   { key: 'เซิร์ฟเวอร์และการ deploy', star: 'if deploy', re: /^##\s*เซิร์ฟเวอร์/im },
   { key: 'การตัดสินใจที่ล็อกแล้ว', star: false, re: /^##\s*การตัดสินใจที่ล็อก/im },
   { key: 'ถ้าไม่แน่ใจ', star: false, re: /^##\s*ถ้าไม่แน่ใจ/im },
+  { key: 'การรันครั้งนี้', star: false, re: /^##\s*การรันครั้งนี้/im },
 ];
 const heads = [...text.matchAll(/^##\s[^\n]*$/gim)].map((m) => m.index);
 const bodyOf = (re) => {
@@ -72,6 +73,11 @@ if (server !== null && !DELEGATED.test(server)) {
 }
 const stack = bodyOf(SECTIONS[3].re);
 if (stack !== null && !/auth/i.test(stack)) hints.push('Tech stack: Auth not stated.');
+if (stack !== null && !/UI kit/i.test(stack)) hints.push('Tech stack: no "UI kit:" line (write the kit location, or "ไม่ใช้" to keep the shadcn/ui default).');
+const reqBody = bodyOf(SECTIONS[0].re) ?? '';
+if (/\.(xlsx?|csv|pdf|png|jpe?g|svg|docx?)\b/i.test(reqBody) && !/(\/|https?:|docs\/inputs)/.test(reqBody)) hints.push('Requirement: mentions a file but gives no path or URL; agents cannot read a file they cannot find (copy it to docs/inputs/ or write the numbers in this document).');
+const run = bodyOf(SECTIONS[7].re);
+if (run !== null && /(^|[\s`"'(])(\/private)?\/tmp\//.test(run)) hints.push('การรันครั้งนี้: the project folder is under /tmp, which macOS cleans after about 3 days; use a permanent folder such as ~/work/<name>.');
 const look = bodyOf(SECTIONS[2].re);
 if (look !== null) {
   const subs = ['ผู้ใช้และบริบท', 'ความรู้สึก', 'เว็บ/แอปอ้างอิง', 'anti-reference', 'ลำดับความสำคัญของหน้า', 'สี / ฟอนต์', 'ความหนาแน่น', 'ข้อมูลตัวอย่าง', 'เกณฑ์ผ่านด้านภาพ'];
@@ -79,6 +85,16 @@ if (look !== null) {
   if (empty.length) hints.push(`Look & feel: empty sub-section(s): ${empty.join(', ')} (agents will propose or guess; they log it for Gate 1).`);
 }
 
+if (look !== null) {   // CI colors: hex or an explicit delegation; a color name cannot be turned into a value
+  for (const label of ['สีหลัก', 'สีรอง', 'สีตกแต่ง']) {
+    const m = look.match(new RegExp('^[-*]\\s*\\**' + label + '[^:\\n]*:\\**\\s*([^\\n]*)$', 'm'));
+    if (!m) { if (label === 'สีหลัก') hints.push('Look & feel: no "สีหลัก (CI)" line (write #RRGGBB or "ให้ AI เลือก").'); continue; }
+    const v = m[1].trim();
+    if (!v || /^[`\s]*#?R{2}G{2}B{2}/i.test(v)) hints.push(`Look & feel: "${label}" is still the placeholder; write a hex like #0057B8 or "ให้ AI เลือก".`);
+    else if (!/#[0-9a-f]{3}\b|#[0-9a-f]{6}\b/i.test(v) && !DELEGATED.test(v) && !/ไม่มี/.test(v)) hints.push(`Look & feel: "${label}: ${v.slice(0, 30)}" has no hex value; agents cannot turn a color name into a color (write #RRGGBB).`);
+  }
+  if (!/ปรับเฉด/.test(look)) hints.push('Look & feel: no "ปรับเฉดเพื่อให้อ่านชัดได้ไหม" line (may the designer lighten/darken a CI color to reach 4.5:1 contrast?).');
+}
 const w = Math.max(...rows.map((r) => r[0].length));
 console.log(`Intake check: ${file}\n`);
 for (const [k, star, st, d] of rows) console.log(`  ${k.padEnd(w)}  ${star.padEnd(10)}  ${st.padEnd(18)} ${d}`);

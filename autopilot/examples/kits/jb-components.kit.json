@@ -1,0 +1,155 @@
+{
+  "schema": 1,
+  "name": "jb-components",
+  "appliesTo": {
+    "framework": "next",
+    "notes": "Next.js 15 App Router + React 19 + Tailwind CSS 3.4 only (Tailwind v4 not supported) + TypeScript; Thai/English UI, dark mode via data-theme (never Tailwind dark:), brand colors via CSS variables. Source: AGENTS.md, docs/guide/02-setup.md, package.json."
+  },
+  "requires": {
+    "framework": "next@^15.5.28 (App Router)",
+    "react": "^19.3.1",
+    "tailwind": "^3.4.19 (v4 unsupported)",
+    "typescript": "^5.9.3"
+  },
+  "target": "apps/web",
+  "scaffoldHints": [
+    "Pin the scaffold to Next 15: npx create-next-app@15 apps/web --ts --tailwind --eslint --app --src-dir --import-alias \"@/*\" --use-npm --no-git --yes (the kit imports itself with @/ -> ./src/*; the STACK.md command without --src-dir gives \"@/*\": [\"./*\"]).",
+    "create-next-app installs Tailwind v4 (@tailwindcss/postcss, no tailwind.config); after scaffolding run in apps/web: npm uninstall @tailwindcss/postcss && npm install -D tailwindcss@^3.4.19 postcss autoprefixer. The installer overwrites postcss.config.mjs, tailwind.config.ts and src/app/globals.css.",
+    "Delete the scaffold src/app/layout.tsx before running install-kit.mjs: \"generated\" files are written only when missing, so the kit root layout (providers) would otherwise be kept out.",
+    "Run install-kit.mjs with --install (or npm install the listed packages) in apps/web, then npm run build to confirm."
+  ],
+  "copy": [
+    {
+      "from": "src/components",
+      "to": "src/components"
+    },
+    {
+      "from": "src/lib",
+      "to": "src/lib"
+    },
+    {
+      "from": "src/app/globals.css",
+      "to": "src/app/globals.css",
+      "overwrite": true
+    },
+    {
+      "from": "tailwind.config.ts",
+      "to": "tailwind.config.ts",
+      "overwrite": true
+    },
+    {
+      "from": "postcss.config.mjs",
+      "to": "postcss.config.mjs",
+      "overwrite": true
+    },
+    {
+      "from": "public/fonts",
+      "to": "public/fonts"
+    }
+  ],
+  "dependencies": [
+    "framer-motion@^14.4.0",
+    "lucide-react@^0.474.0",
+    "clsx@^2.1.1",
+    "tailwind-merge@^2.6.1",
+    "recharts@^3.10.1",
+    "react-is@^19.3.1"
+  ],
+  "devDependencies": [
+    "tailwindcss@^3.4.19",
+    "postcss@^8.5.31",
+    "autoprefixer@^10.6.1"
+  ],
+  "generated": [
+    {
+      "to": "src/app/layout.tsx",
+      "content": "import type { Metadata } from 'next';\nimport './globals.css';\nimport { getLang } from '@/lib/i18n/server';\nimport { I18nProvider } from '@/lib/i18n/client';\nimport { FeedbackHost } from '@/components/feedback';\nimport { ThemeProvider, THEME_INIT_SCRIPT } from '@/components/ThemeProvider';\nimport { BRAND_CSS } from '@/lib/brand';\n\nexport const metadata: Metadata = { title: 'Room Booking' };\n\nexport default async function RootLayout({ children }: { children: React.ReactNode }) {\n  const lang = await getLang();\n  return (\n    <html lang={lang} suppressHydrationWarning>\n      <head>\n        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />\n        <style id=\"brand\" dangerouslySetInnerHTML={{ __html: BRAND_CSS }} />\n      </head>\n      <body>\n        <I18nProvider lang={lang}>\n          <ThemeProvider>\n            {children}\n            <FeedbackHost />\n          </ThemeProvider>\n        </I18nProvider>\n      </body>\n    </html>\n  );\n}\n"
+    }
+  ],
+  "brand": {
+    "file": "src/lib/brand.ts",
+    "template": "import { ciTheme, ciThemeCss, parseHex, toHex } from '@/lib/ci-theme';\nimport { chartThemeCss } from '@/lib/chart-palette';\n\n/** Brand colors (CI): [primary, secondary, accent]. Server-safe copy of ciStyleCss(): the kit's ci-store.ts is a client module (it imports a React hook) and cannot be imported by the root layout. */\nconst COLORS: string[] = {{COLORS}};\nconst valid = (s?: string) => !!s && parseHex(s) !== null;\nconst norm = (s: string) => toHex(parseHex(s)!);\n\nfunction brandCss(): string {\n  if (!valid(COLORS[0])) return '';\n  const [primary, secondary, decor] = COLORS.slice(0, 3).map((c) => (valid(c) ? norm(c) : undefined));\n  const theme = ciTheme({ primary: primary!, secondary, decor, harmonize: true });\n  return `${ciThemeCss(theme)}\\n${chartThemeCss({ primary: primary!, secondary: theme.info.secondary, decor: theme.info.decor })}`;\n}\n\nexport const BRAND_CSS = brandCss();\n"
+  },
+  "docs": {
+    "entry": "AGENTS.md",
+    "readme": "README.md",
+    "workflow": "docs/guide/01-workflow.md",
+    "setup": "docs/guide/02-setup.md",
+    "requirementMap": "docs/guide/03-requirement-map.md",
+    "pageRecipes": "docs/guide/04-page-recipes.md",
+    "rules": "docs/guide/05-rules.md",
+    "checklist": "docs/guide/06-checklist.md",
+    "apiIndex": "docs/api/README.md",
+    "componentGuides": "docs/guide/components"
+  },
+  "components": [
+    "Accordion",
+    "AnimatedNumber",
+    "AppShell",
+    "Avatar",
+    "BlobArt",
+    "BrandMarks",
+    "Breadcrumb",
+    "Carousel",
+    "Choice",
+    "CiThemeApplier",
+    "Combobox",
+    "CommandPalette",
+    "DatePicker",
+    "DateRangePicker",
+    "DropdownMenu",
+    "EmptyState",
+    "ExpandButton",
+    "FieldMessage",
+    "FileDrop",
+    "HelpTip",
+    "Kbd",
+    "Loading",
+    "Marquee",
+    "MediaLightbox",
+    "NumberInput",
+    "OtpInput",
+    "Overlay",
+    "PillSwitch",
+    "Popover",
+    "ProgressRing",
+    "SegmentedControl",
+    "Select",
+    "ShareButtons",
+    "Slider",
+    "StatusBadge",
+    "Stepper",
+    "Table",
+    "Tabs",
+    "TagInput",
+    "ThemeProvider",
+    "Toaster",
+    "Tooltip",
+    "ui (Card, Button, Chip, Field, Input, Textarea, Progress, Empty, Skeleton, SkeletonText)",
+    "feedback (toast, confirmDialog, FeedbackHost)",
+    "Overlay (useModal, Dialog, Drawer)",
+    "admin/kit (DataTable, Toolbar, FilterSelect, Pagination, SectionCard, StatCard, AdminPageHeader, InfoNote)",
+    "admin/ImagePicker",
+    "admin/PasswordFields",
+    "admin/RowMenu",
+    "charts (ChartCard, TrendChart, BarsChart, DonutChart, Heatmap, CalendarHeatmap, KpiCard, RankList, Sparkline)",
+    "blocks (Reveal, SiteNav, Hero, LogoCloud, FeatureBento, Steps, StatsBand, Testimonials, FaqSection, CtaBand, SiteFooter)"
+  ],
+  "rules": [
+    "Use the kit component whenever one fits the requirement; do not write your own (AGENTS.md, docs/guide/03-requirement-map.md \"ห้ามทำเอง\").",
+    "No hard-coded colors (bg-white, text-red-500, bg-[#hex]) and no Tailwind dark:; use tokens (bg-paper, bg-surface, text-ink, bg-brand-600, text-brand-link, ok/warn/danger) (docs/guide/05-rules.md \"สี และโหมดมืด\").",
+    "Tailwind opacity steps that do not exist (/12, /7, /3, /6) silently produce no class; use /10 or an arbitrary value like /[0.06] (docs/guide/05-rules.md \"Tailwind opacity\").",
+    "Field is a <label> by default: wrap fields with buttons or several elements (Combobox, Select, DatePicker, DateRangePicker, NumberInput, TagInput, RadioGroup, PasswordInput, Slider, FileDrop, ImagePicker) with as=\"div\"; never wrap Checkbox/Switch/Radio in a label Field (docs/guide/05-rules.md \"Field\").",
+    "Files using state/handlers need 'use client'; no function props from a server component; useSearchParams needs <Suspense> in the page; toast/confirmDialog are client-only (docs/guide/05-rules.md \"Server / Client component\").",
+    "No Math.random(), Date.now() or new Date() during render, and localStorage/window only in useEffect; pass an explicit locale (th-TH) or use formatNumber/formatDate (docs/guide/05-rules.md \"Hydration\").",
+    "Never remove i18n keys in src/lib/i18n/dict.th.ts / dict.en.ts; add new keys to both files (docs/guide/05-rules.md \"ข้อความ ภาษา i18n\").",
+    "Stored and API dates are ISO Gregorian (YYYY-MM-DD); DatePicker value is a string, empty = ''; NumberInput empty = null; Combobox empty = null; DataTable rows need a numeric id (docs/guide/05-rules.md \"ฟอร์มและข้อมูล\").",
+    "List filters, search and page live in the URL (useSearchParams + router.replace), reset page on filter change; confirmDialog before delete; keep pure logic in .ts files for vitest (docs/guide/05-rules.md \"ฟอร์มและข้อมูล\").",
+    "Shortcuts are written 'mod+K' (never ctrlKey||metaKey or a hard-coded \"Ctrl+K\"); icon-only buttons need aria-label; no 375px horizontal scroll; min-h-dvh not min-h-screen (docs/guide/05-rules.md)."
+  ],
+  "exclude": [
+    "__tests__",
+    ".test.",
+    ".spec."
+  ]
+}

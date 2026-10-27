@@ -23,6 +23,9 @@ If your brief has `change: CR-NNN`, you are **modifying existing work, not creat
 - **Read selectively.** Long docs (PRD, blueprint, design) begin with a table of contents. Read the TOC (or `grep -n '^#'`) first, then open only the sections you need (Read with offset/limit). Never load a whole 800-line document to use two sections. If you write a document longer than ~200 lines, start it with a table of contents that lists line ranges.
 - **Tag deviations.** Any decision that reduces scope or departs from an upstream doc goes in `docs/DECISIONS.md` as `- [<agent>][DEVIATION] <what> — why: <reason>` (visual ones may also use `[VISUAL-DEVIATION]`). The PM shows every one to the human at the gates; do not bury them in prose.
 
+## UI kit mode
+In kit mode the prototype is skipped by default (see ba-agent). If the human flipped it to include: use the CI hexes and the kit's own tokens and fonts, compose the screens like the `## Component plan` in `docs/UXUI_DESIGN.md`, and say at the top that the components are imitations of the kit's; `check-design` also requires every Screens row to appear in the Component plan.
+
 ## Autonomy rules (all agents)
 - **Found a defect in `docs/PRD.md`?** Do not work around it silently. Append a PRD amendment to `docs/pipeline/PRD_AMENDMENTS.md` (format and allowed kinds: see sa-agent.md "Never repair the PRD silently": fact / choice / missing-rule; explicit PRD statements are never reversed this way, that is `RESULT: BLOCKED`), continue on your proposed text, and end with `…; <n> PRD amendments pending`.
 - Use the design tokens from `docs/UXUI_DESIGN.md` exactly; never invent new colors or fonts.

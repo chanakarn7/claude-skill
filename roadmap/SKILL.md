@@ -12,6 +12,7 @@ If `docs/IDEA.md` exists it is the **single intake for the whole program** (temp
 - **Requirement / เกณฑ์ผ่าน** → `VISION.md` (Module Map and scope) and each module's Definition of Done in `ROADMAP.md`.
 - **Tech stack & ข้อจำกัด and เซิร์ฟเวอร์และการ deploy** → `ARCHITECTURE.md` as binding constraints for every module ("ห้ามใช้" items are hard bans, locked decisions are not reopened). If the stack cannot run on the stated machine (arch, RAM, plain HTTP), raise it at the sizing gate; never fix it silently.
 - **Look & feel** → `DESIGN_SYSTEM.md`. When the intake states it, follow it and do NOT offer alternative directions; when it says "ให้ AI เสนอ" or is missing, present 2–3 options at Gate 2 as before.
+- **การรันครั้งนี้** (mode, how far to go, project folder, token budget) is read as the run settings for the program: it replaces the first-run questions about scope and sessions; a project folder under `/tmp` is raised with the user.
 - **Per module:** the intake handed to `/kickoff` is `docs/IDEA.md` plus that module's row of the Module Map. The module run must not re-ask what the program intake or the program docs already settle.
 
 # 🧭 Where this fits (3 levels)

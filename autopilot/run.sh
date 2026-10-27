@@ -4,6 +4,7 @@
 #   ./run.sh change "<what to change | file>" [dir]      # restyle / new requirement / bigger fix on a built project
 #   ./run.sh change --amend "<new text>" [dir]           # re-analyse the open change request (before its plan is approved)
 #   ./run.sh change --cancel [dir]                       # drop the open change request (before its plan is approved)
+#   ./run.sh kit [dir]                                   # resolve the UI kit named in docs/IDEA.md and show what would be installed
 #   ./run.sh adopt [dir]                                 # bring the design docs in line with code changed outside autopilot
 #   ./run.sh preview [dir]                               # run the built app with demo data (npm run demo, free ports)
 #   ./run.sh program [dir]                               # multi-module build from docs/program/ROADMAP.md (made with /roadmap)
@@ -101,6 +102,7 @@ pilot() {
     { echo; awk '/^## UI layer \(web\)/{p=1} /^## Local database/{p=0} p' "$ROOT/stack.md"; } >> "$PROJECT/docs/STACK.md"
   fi
   ensure_gitignore
+  node "$ROOT/templates/resolve-kit.mjs" "$PROJECT" || true   # UI kit: write docs/pipeline/kit.json (status none / resolved / needs-discovery / error)
   if [ -f "$STATE" ] && [ "$(state_get status)" = running ]; then
     state_log "previous run left status: running with no live process (it was killed); continuing"
   fi
@@ -145,6 +147,13 @@ case "$CMD" in
           pilot 'start docs/IDEA.md' ;;
   resume) pilot resume ;;
   program) pilot program ;;
+
+  kit)
+    node "$ROOT/templates/resolve-kit.mjs" "$PROJECT" || true
+    if [ -f "$PROJECT/docs/pipeline/kit.json" ] && grep -qE '"status": "(resolved|discovered)"' "$PROJECT/docs/pipeline/kit.json"; then
+      mkdir -p "$PROJECT/docs/pipeline/templates"; cp "$ROOT"/templates/* "$PROJECT/docs/pipeline/templates/"
+      node "$PROJECT/docs/pipeline/templates/install-kit.mjs" "$PROJECT" --dry-run
+    fi ;;
 
   adopt)
     [ -f "$STATE" ] || { echo "No pipeline in $PROJECT yet — nothing to adopt."; exit 1; }
