@@ -41,7 +41,7 @@ autopilot program .                # ระบบใหญ่ตาม docs/prog
 ไม่มีปุ่ม "ปฏิเสธ": ถ้าไม่พอใจให้แก้ไฟล์ของ gate นั้นแล้วค่อย approve
 
 ## 3b. UI kit (คลังคอมโพเนนต์กลาง เช่น jb-components)
-ใส่บรรทัด `UI kit:` ในหัวข้อ Tech stack ของ intake (git URL + ref, path ในเครื่อง หรือชื่อที่ลงทะเบียนไว้) แล้ว autopilot จะ: หา kit (path ก่อน ถ้าไม่มีก็ clone จาก git URL) → ถ้า kit ไม่มี `kit.json` ให้ `kit-agent` อ่านเอกสารครั้งเดียวแล้วเขียน manifest ให้ตรวจที่ Gate 1 (`docs/pipeline/KIT_NOTES.md`) → dev ติดตั้งด้วย `install-kit.mjs` และต้องใช้คอมโพเนนต์ของ kit (ไม่มี shadcn) → `check-dev` ตรวจว่าไม่เขียนปุ่ม/ช่อง/ตารางเอง และไม่แก้ไฟล์ของ kit
+ใส่บรรทัด `UI kit:` ในหัวข้อ Tech stack ของ intake (git URL + ref, path ในเครื่อง หรือชื่อที่ลงทะเบียนไว้) แล้ว autopilot จะ: หา kit (path ก่อน ถ้าไม่มีก็ clone จาก git URL) → ถ้า kit ไม่มี `kit.json` (jb-components มีแล้ว) ให้ `kit-agent` อ่านเอกสารครั้งเดียวแล้วเขียน manifest ให้ตรวจที่ Gate 1 (`docs/pipeline/KIT_NOTES.md`) → dev ติดตั้งด้วย `install-kit.mjs` และต้องใช้คอมโพเนนต์ของ kit (ไม่มี shadcn) → `check-dev` ตรวจว่าไม่เขียนปุ่ม/ช่อง/ตารางเอง และไม่แก้ไฟล์ของ kit
 - ดูผลการหา kit โดยไม่รันอะไร: `autopilot kit .`
 - ลงทะเบียนชื่อสั้นครั้งเดียว (ย้ายเครื่องแล้วเปลี่ยนแค่ไฟล์นี้) ที่ `~/.claude/autopilot.json`:
   `{ "defaultKit": "jb-components", "kits": { "jb-components": { "git": "https://github.com/<owner>/jb-components", "ref": "main", "path": "/Users/me/Documents/GitHub/jb-components" } } }`

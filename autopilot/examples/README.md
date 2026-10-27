@@ -15,8 +15,8 @@ autopilot start autopilot/examples/meeting-room-booking.md ~/work/room-booking
 
 ก่อนเริ่ม `autopilot start` จะพิมพ์ **Intake check** ให้ดูว่าหัวข้อไหนกรอกแล้ว (GIVEN) ปล่อยให้ AI เลือก (DELEGATED) หรือขาด (MISSING) รันเองได้ด้วย `node autopilot/templates/check-intake.mjs <ไฟล์>` (ไม่ใช้ token)
 
-## ตัวอย่าง manifest ของ UI kit
-`kits/jb-components.kit.json` คือ manifest ที่ `kit-agent` สร้างจาก jb-components จริง (แก้เทมเพลต `brand.ts` ให้เซิร์ฟเวอร์ใช้ได้แล้ว) ทดสอบแล้วว่าติดตั้งลง Next 15 ด้วย `install-kit.mjs` แล้ว typecheck และ `next build` ผ่าน และสีแบรนด์ถูกเรนเดอร์ลงหน้า ถ้าวางไฟล์นี้ไว้ที่ root ของ kit ในชื่อ `kit.json` autopilot จะข้ามขั้นค้นหา (kit-agent) ไปเลย
+## UI kit: manifest ของ kit
+jb-components ส่ง `kit.json` ของตัวเองไว้ที่ root (ตรวจกับโค้ดจริงด้วย `npm run kit:check` ใน kit) ดังนั้น autopilot ข้ามขั้น `kit-agent` และไม่เสีย token ไปอ่านเอกสารของ kit ทดสอบแล้วว่า `resolve-kit` ได้สถานะ `resolved` และ `install-kit` ลง Next 15 แล้ว typecheck, `next build` และสีแบรนด์ผ่าน kit ที่ไม่มี `kit.json` จะใช้ `kit-agent` ค้นหาครั้งเดียวแทน (ดู `agents/kit-agent.md` สำหรับรูปแบบ manifest)
 
 ## intake ต้องมีข้อมูลอะไร และใครใช้
 
