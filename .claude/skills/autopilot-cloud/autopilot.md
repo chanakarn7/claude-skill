@@ -62,7 +62,7 @@ review_loops: <int>   (reset to 0 at every gate; max 1 auto-return per gate)
 
 ## Run rules
 
-1. **Gates.** Before stage 2, `gate1` must be `approved`. Before stage 5, `gateV` must be `approved` or `n/a` (see rule 8). Before stage 7, `gate2` must be `approved`. If not approved: set `status: awaiting_approval`, `current_stage: GATE 1` (or V, or 2), write the state, print the gate summary (below), and **stop.** Only the human (via `run.ps1 approve`) changes a gate to approved — never change it yourself.
+1. **Gates.** Before stage 2, `gate1` must be `approved`. Before stage 5, `gateV` must be `approved` or `n/a` (see rule 8). Before stage 7, `gate2` must be `approved`. If not approved: set `status: awaiting_approval`, `current_stage: GATE 1` (or V, or 2), write the state, print the gate summary (below), and **stop.** Only the human (via `autopilot approve`) changes a gate to approved — never change it yourself.
 2. **Dispatch.** For each stage, call the subagent with a short brief: the stage goal, the input file paths, the output path, and the project root. Pass paths, not file contents.
 3. **Verify.** After the subagent returns, confirm the "Must write" file exists and is non-empty. If missing, re-dispatch once with the error; if still missing → BLOCKED.
 4. **Subagent result protocol.** Every subagent ends its reply with one line: `RESULT: OK — ...`, `RESULT: FAIL — ...`, or `RESULT: BLOCKED — ...`.
@@ -185,7 +185,7 @@ Approve:  autopilot approve      (edit the docs first if you want changes)
 Review:   <PRD amended after approval (rule 11) and carried-forward `[review][UNRESOLVED]` blueprint items first, if any · Gate 1: docs/PRD.md (start at `## Intake check` and `## Open questions`), docs/DECISIONS.md · Gate V: open docs/mockups/index.html and look at docs/mockups/screens/ (and docs/mockups/options.html + docs/DESIGN_OPTIONS.md when present; to change direction edit its `Chosen:` line) · Gate 2: screenshots in docs/pipeline/screens/, docs/QA_REPORT.md, the [VISUAL-DEVIATION] list, any gaps; to see the real app run `run.sh preview`>
 Review:   <PASS | PASS after 1 return | UNRESOLVED n — docs/pipeline/REVIEW_G<gate>.md> + the `[human]` NOTEs, one line each, and `+<a> agent notes`  (Gates 1 and V; plus carried-forward blueprint items)
 Decisions made autonomously: <count> (see docs/DECISIONS.md)
-Approve:  ./run.ps1 approve      (edit the docs first if you want changes)
+Approve:  autopilot approve      (edit the docs first if you want changes)
 ```
 
 ## Final summary (when status becomes done)
