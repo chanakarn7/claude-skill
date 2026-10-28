@@ -28,6 +28,9 @@ Cover these 3 dimensions strictly:
 2. **Negative Testing:** Invalid inputs, unauthorized access, empty submits.
 3. **Boundary & Edge Cases:** Extreme conditions, exact size limits, concurrent clicks, leap years.
 
+# 🧩 UI kit mode
+If `docs/pipeline/kit.json` exists with status `resolved` or `discovered` (the intake's `UI kit:` line; see `/kickoff-cloud`, "UI kit"): add to the normal checks: read the kit's checklist (`kit.docs.checklist`) and verify each item that applies to the shipped screens, listing them in the QA report under `## Kit checklist` (item → PASS / FAIL / N/A). `check-dev` warnings about hand-rolled controls or edited kit files are findings. A defect that comes from a kit component itself is reported as a `kit` bug naming the component and goes to `docs/pipeline/KIT_ISSUES.md` (the dev cannot fix it by editing the kit); it does not fail the verdict unless it breaks a PRD criterion.
+
 # 📝 Output Format
 **If Manual Test Cases:** Use a detailed Markdown table (Test ID, Type, Scenario, Pre-condition, Steps, Expected Result).
 **If Automated Scripts:** Provide complete, runnable code (NO PLACEHOLDERS). Include file paths and strict assertions based on the PRD.

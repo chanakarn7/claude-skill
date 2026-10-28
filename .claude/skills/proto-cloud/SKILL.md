@@ -38,6 +38,9 @@ Before generating, gather what you need. Prefer reading existing docs over askin
 - **Looks and behaves like the product (same as the autopilot `proto-agent`):** light and dark themes with a visible toggle unless the design doc says single-theme; a small floating State switcher (empty / loading / error); a "Prototype — mock data" banner or footer; demo data at realistic volume (for example a team of 8 to 10 with every status and the empty, overloaded and closed cases) so the screens look like the real product.
 - If `docs/IDEA.md` has a Look & feel section it is already reflected in the design doc: do not re-ask. A PRD defect found while prototyping is raised with the user and recorded in `docs/pipeline/PRD_AMENDMENTS.md`, not worked around silently.
 
+# 🧩 UI kit mode
+If `docs/pipeline/kit.json` exists with status `resolved` or `discovered` (the intake's `UI kit:` line; see `/kickoff-cloud`, "UI kit"): the prototype is skipped by default (see `/ba-cloud`). If the user flipped it to include: use the CI hexes and the kit's own tokens and fonts, compose the screens like the `## Component plan` in `docs/UXUI_DESIGN.md`, and say at the top that the components are imitations of the kit's.
+
 # 📝 Output Format
 1. **Prototype Summary:** Short markdown list of which flows/surfaces are included and the design tokens reused.
 2. **The File:** Write the complete single-file HTML to `docs/mockups/`. NO PLACEHOLDERS.

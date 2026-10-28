@@ -35,6 +35,9 @@ Write `docs/PRD.md`, starting with a **table of contents with line ranges**, the
 10. **Intake check** — one line per intake section: `given` / `assumed (see DECISIONS)` / `missing`.
 Every acceptance criterion must be testable and unambiguous: no "either A or B", no "appropriate".
 
+# 🧩 UI kit mode
+If `docs/pipeline/kit.json` exists with status `resolved` or `discovered` (the intake's `UI kit:` line; see `/kickoff-cloud`, "UI kit"): copy the kit's `appliesTo.notes` and `requires` into the PRD's technical constraints as given, write `Prototype: skip — a UI kit provides the look and the screenshots at the /dev-cloud checkpoint verify it (the human can flip this line)`, and write no look-and-feel statement that contradicts the kit (components, icon family, fonts and theme come from the kit). Stories describe behavior, never components.
+
 # 🔁 Amend mode (when `/sa-cloud` found a defect in the PRD)
 If `docs/pipeline/PRD_AMENDMENTS.md` has entries with `status: open`, patch the existing PRD from them instead of rewriting: smallest edit per entry, tag the edited line `[amend A<n>]`, verify facts yourself, set `status: applied` (or `rejected — <reason>` if it would reverse behavior the PRD states explicitly), log each in `docs/DECISIONS.md`. Show the user the diff.
 

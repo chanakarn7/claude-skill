@@ -46,6 +46,7 @@ autopilot program .                # ระบบใหญ่ตาม docs/prog
 - ลงทะเบียนชื่อสั้นครั้งเดียว (ย้ายเครื่องแล้วเปลี่ยนแค่ไฟล์นี้) ที่ `~/.claude/autopilot.json`:
   `{ "defaultKit": "jb-components", "kits": { "jb-components": { "git": "https://github.com/<owner>/jb-components", "ref": "main", "path": "/Users/me/Documents/GitHub/jb-components" } } }`
 - ตัวอย่างพร้อมรัน: `autopilot/examples/meeting-room-booking-jb.md`
+- ใช้ได้ทั้งกับ `autopilot` และสกิลที่สั่งเอง: `/kickoff` ค้นหา kit ครั้งเดียวก่อนขั้น `/ba` แล้ว `/ba`, `/sa`, `/uxui`, `/proto`, `/scaffold`, `/dev`, `/qa` ปรับตาม kit (ไม่ใช้ shadcn) `/roadmap` ตั้ง kit ที่ระดับโปรแกรมใน Sprint 0
 - ข้อจำกัด: ใช้กับโปรเจกต์ Next เท่านั้น และโหมด kit ข้าม prototype ตามค่าเริ่มต้น (ดูผลหน้าตาที่ Gate 2)
 
 ## 4. ก่อนรันครั้งแรก
