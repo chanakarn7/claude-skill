@@ -93,7 +93,12 @@ if (kitManifest && ['resolved', 'discovered'].includes(kitManifest.status) && sc
     const rows = new Map();
     for (const line of cp[1].split('\n')) { const c = line.split('|').map((x) => x.trim()); if (c.length >= 4 && /^[a-z0-9][a-z0-9-_]*$/.test((c[1] || '').replace(/`/g, ''))) rows.set(c[1].replace(/`/g, ''), c.slice(2).join(' ')); }
     for (const id of screens) if (!rows.has(id)) errors.push(`screen "${id}" has no row in the Component plan`);
-    const known = new Set((kitManifest.components || []).map((x) => String(x)));
+    // entries can be groups such as "ui (Card, Button, Chip)": every capitalized name inside counts
+    const known = new Set((kitManifest.components || []).flatMap((x) => String(x).match(/[A-Za-z][A-Za-z0-9]*/g) || []));
+    // the manifest lists files; the real exports (Switch, RadioGroup, LoadingButton, ...) come from the kit's component sources
+    const compDir = kitManifest.source && kitManifest.source.path ? path.join(kitManifest.source.path, 'src', 'components') : null;
+    const scan = (d) => { try { return fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? scan(path.join(d, e.name)) : /\.tsx?$/.test(e.name) ? [path.join(d, e.name)] : [])); } catch { return []; } };
+    if (compDir) for (const f of scan(compDir)) for (const m of fs.readFileSync(f, 'utf8').matchAll(/export\s+(?:default\s+)?(?:function|const|class)\s+([A-Z][A-Za-z0-9]*)/g)) known.add(m[1]);
     if (known.size) for (const [id, txt] of rows) {
       const unknown = [...new Set(txt.match(/\b[A-Z][A-Za-z0-9]{2,}\b/g) || [])].filter((w) => !known.has(w) && !/^(New|None|N\/A|TODO)$/.test(w) && !new RegExp(w + '[^|]{0,20}\\(new\\)', 'i').test(txt));
       if (unknown.length) warns.push(`Component plan "${id}": ${unknown.slice(0, 4).join(', ')} not in the kit's component list (mark a new component "(new)")`);
