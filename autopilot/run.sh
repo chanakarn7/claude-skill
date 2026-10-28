@@ -107,6 +107,8 @@ pilot() {
     state_log "previous run left status: running with no live process (it was killed); continuing"
   fi
   local log="$PROJECT/docs/pipeline/run-$(date +%Y%m%d-%H%M%S).log" rc=0
+  # `claude -p` stops background sub-agents 10 minutes after the last turn; stages (sa, dev, qa) take longer. 0 = wait indefinitely.
+  export CLAUDE_CODE_PRINT_BG_WAIT_CEILING_MS="${CLAUDE_CODE_PRINT_BG_WAIT_CEILING_MS:-0}"
   echo "▶ autopilot $1  (project: $PROJECT)"
   { cat "$ROOT/autopilot.md"; printf '\n\nCOMMAND: %s\n' "$1"; } | (cd "$PROJECT" && claude -p \
     --permission-mode acceptEdits --strict-mcp-config \

@@ -62,6 +62,7 @@ review_loops: <int>   (reset to 0 at every gate; max 1 auto-return per gate)
 
 ## Run rules
 
+0. **Run every agent in the foreground.** Dispatch each team agent with the Agent tool and wait for its result in the same turn; never use `run_in_background`, and never end your turn while an agent is still running (the runner kills background agents after the turn ends, which loses the stage; found when `sa-agent` took longer than 10 minutes).
 1. **Gates.** Before stage 2, `gate1` must be `approved`. Before stage 5, `gateV` must be `approved` or `n/a` (see rule 8). Before stage 7, `gate2` must be `approved`. If not approved: set `status: awaiting_approval`, `current_stage: GATE 1` (or V, or 2), write the state, print the gate summary (below), and **stop.** Only the human (via `autopilot approve`) changes a gate to approved — never change it yourself.
 2. **Dispatch.** For each stage, call the subagent with a short brief: the stage goal, the input file paths, the output path, and the project root. Pass paths, not file contents.
 3. **Verify.** After the subagent returns, confirm the "Must write" file exists and is non-empty. If missing, re-dispatch once with the error; if still missing → BLOCKED.
